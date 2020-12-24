@@ -13,7 +13,8 @@ namespace readdef
 	int	fldtr = 96;				//フィールド背景非表示時のフィールド透過度(0-256)
 	int	dispnext = 3;			//ネクストブロック表示数の選択（０～３）
 	int	movesound = 1;			//ブロック移動音の選択	0:OFF 1:ON
-	int	wavebgm = 1;			//BGMの選択
+	/* 1 : MIDI, 2 : WAV, 3 : OGG, 4 : MP3*/
+	int	wavebgm = 4;			//BGMの選択
 	int	maxPlay = 0;			//プレイヤー人数の選択	0:シングル 1:デュアル
 
 	int	breakeffect = 1;	//ラインをそろえたとき、ブロックを弾けさせるか 0:off 1:on
