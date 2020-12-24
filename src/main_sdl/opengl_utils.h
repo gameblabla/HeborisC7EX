@@ -9,10 +9,9 @@
 #include <math.h>
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
 
 #if		SDL_USE_OPENGL
-
+#include <SDL/SDL_opengl.h>
 struct GL_Texture
 {
 	bool	active;

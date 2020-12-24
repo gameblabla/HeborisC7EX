@@ -2,8 +2,10 @@
 #	include <windows.h>
 #endif
 
+#ifdef SDL_USE_OPENGL
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
