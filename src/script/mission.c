@@ -1,3 +1,5 @@
+#include "gamestart.h"
+
 //▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽
 //  ステータスNo.23 - MISSIONモード セレクト画面
 //▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲
@@ -189,7 +191,7 @@ void statMissionEditor(int player) {
 
 	// 制限時間
 	printFont(15 + 24 * player - 12 * maxPlay, 9, "TIME", fontc[rots[player]]);
-	getTime(mission_time[c_mission]);
+	getTime(mission_time_game[c_mission]);
 	printFont(15 + 24 * player - 12 * maxPlay, 10, string[0], (statc[0 + player * 10] == 2) * count % 9);
 
 	// レベル
@@ -402,8 +404,8 @@ void statMissionEditor(int player) {
 		}
 		// TIME
 		if(statc[0 + player * 10] == 2) {
-			mission_time[c_mission] = mission_time[c_mission] - 60;
-			if(mission_time[c_mission] < 0) mission_time[c_mission] = 60 * 60 * 20;
+			mission_time_game[c_mission] = mission_time_game[c_mission] - 60;
+			if(mission_time_game[c_mission] < 0) mission_time_game[c_mission] = 60 * 60 * 20;
 		}
 		// LEVEL
 		if(statc[0 + player * 10] == 3) {
@@ -456,8 +458,8 @@ void statMissionEditor(int player) {
 		}
 		// TIME
 		if(statc[0 + player * 10] == 2) {
-			mission_time[c_mission] = mission_time[c_mission] + 60;
-			if(mission_time[c_mission] > 60 * 60 * 20) mission_time[c_mission] = 0;
+			mission_time_game[c_mission] = mission_time_game[c_mission] + 60;
+			if(mission_time_game[c_mission] > 60 * 60 * 20) mission_time_game[c_mission] = 0;
 		}
 		// LEVEL
 		if(statc[0 + player * 10] == 3) {
@@ -558,8 +560,8 @@ void viewMission() {
 	if(!english) strcpy(string[70], "制限時間 ");
 	else strcpy(string[70], "Time ");
 
-	getTime(mission_time[c_mission]);
-	if(mission_time[c_mission]>0){
+	getTime(mission_time_game[c_mission]);
+	if(mission_time_game[c_mission]>0){
 	strcat(string[70], string[0]);
 	}else{
 		if(!english) strcat(string[70], "無制限");
@@ -938,7 +940,7 @@ void missionNormUp(int lines) {
 	}
 
 	//耐久
-	if((ltime[0] <= 0) && (mission_type[c_mission] == 23))
+	if((ltime_game[0] <= 0) && (mission_type[c_mission] == 23))
 		c_norm[0] = mission_norm[c_mission];
 
 	// 全消し
@@ -1164,7 +1166,7 @@ void missionSetStatus() {
 	upLineNo[0] = 0;
 
 	// タイム
-	ltime[0] = mission_time[c_mission];
+	ltime_game[0] = mission_time_game[c_mission];
 
 	// レベル
 	lv[0] = mission_lv[c_mission] + 1;
@@ -1350,12 +1352,12 @@ void missionSetStatus() {
 	//回転不可
 	if(mission_type[c_mission] == 17) {
 		isrotatelock[0] = 1;
-		rt_nblk[0 + 6 * 0] = rand(4,0);
-		rt_nblk[1 + 6 * 0] = rand(4,0);
-		rt_nblk[2 + 6 * 0] = rand(4,0);
-		rt_nblk[3 + 6 * 0] = rand(4,0);
-		rt_nblk[4 + 6 * 0] = rand(4,0);
-		rt_nblk[5 + 6 * 0] = rand(4,0);
+		rt_nblk[0 + 6 * 0] = rand_game(4,0);
+		rt_nblk[1 + 6 * 0] = rand_game(4,0);
+		rt_nblk[2 + 6 * 0] = rand_game(4,0);
+		rt_nblk[3 + 6 * 0] = rand_game(4,0);
+		rt_nblk[4 + 6 * 0] = rand_game(4,0);
+		rt_nblk[5 + 6 * 0] = rand_game(4,0);
 	} else {
 		isrotatelock[0] = 0;
 		rt_nblk[0 + 6 * 0] = 0;
@@ -1478,7 +1480,7 @@ void setEraserLines() {
 			tmp = min+1;
 		}else{
 			do {
-				tmp = rand(22,0);
+				tmp = rand_game(22,0);
 			} while( (tmp < min+1) || (tmp > max+1) || (line[tmp] == 1) );
 		}
 		line[tmp] = 1;
@@ -1510,8 +1512,8 @@ statc[0 * 10 + 6] = mission_opt_3[c_mission];
 	}else{
 		// 追加情報で出現ステージの範囲を指定可能 #1.60c7s2
 		do {
-			if(repversw < 46) tmp = rand(100,0);
-			else tmp = rand(mission_opt_2[c_mission] + 1,0);
+			if(repversw < 46) tmp = rand_game(100,0);
+			else tmp = rand_game(mission_opt_2[c_mission] + 1,0);
 		} while( (tmp < mission_opt_1[c_mission]) || (tmp > mission_opt_2[c_mission]) || (target_cleared[tmp] == 1) );
 	target_cleared[tmp] = 1;	// 出現済みフラグON
 	}
@@ -1543,7 +1545,7 @@ void loadMissionData(int number) {
 	for(i = 0; i < 30; i++) {
 		mission_type[i]  = saveBuf[(i + 1) * 20 + 0];	// 種類
 		mission_norm[i]  = saveBuf[(i + 1) * 20 + 1];	// ノルマ
-		mission_time[i]  = saveBuf[(i + 1) * 20 + 2];	// 制限時間
+		mission_time_game[i]  = saveBuf[(i + 1) * 20 + 2];	// 制限時間
 		mission_end[i]   = saveBuf[(i + 1) * 20 + 3];	// 終了フラグ
 		mission_lv[i]    = saveBuf[(i + 1) * 20 + 4];	// レベル
 		mission_erase[i] = saveBuf[(i + 1) * 20 + 5];	// クリア時に上から消去するライン数
@@ -1567,7 +1569,7 @@ void saveMissionData(int number) {
 	for(i = 0; i < 30; i++) {
 		saveBuf[(i + 1) * 20 + 0] = mission_type[i];	// 種類
 		saveBuf[(i + 1) * 20 + 1] = mission_norm[i];	// ノルマ
-		saveBuf[(i + 1) * 20 + 2] = mission_time[i];	// 制限時間
+		saveBuf[(i + 1) * 20 + 2] = mission_time_game[i];	// 制限時間
 		saveBuf[(i + 1) * 20 + 3] = mission_end[i];		// 終了フラグ
 		saveBuf[(i + 1) * 20 + 4] = mission_lv[i];		// レベル
 		saveBuf[(i + 1) * 20 + 5] = mission_erase[i];	// クリア時に上から消去するライン数

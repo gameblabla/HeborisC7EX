@@ -1,3 +1,5 @@
+#include "gamestart.h"
+
 //▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽
 //  ステータスNo.09 - PRACTICEモードメニュー
 //▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲
@@ -962,7 +964,7 @@ void PracticeStart(void){
 	hiddenProc(0);
 
 	if(p_goaltype==4){
-		ltime[0] = p_goaltypenumlist[p_goaltypenum] * 2 * 60;
+		ltime_game[0] = p_goaltypenumlist[p_goaltypenum] * 2 * 60;
 	}
 
 	// エンディング #1.60c7k7
@@ -1039,7 +1041,7 @@ void PracticeStart(void){
 		GiziSRand(0);				// 擬似乱数のシードを生成（リプレイ時除く）
 
 	}
-	hole[0] = rand(10,0);
+	hole[0] = rand_game(10,0);
 	stat_game[0] = 3;					// Ready
 	statc[0 * 10] = 0;				// ステータスカウンタを0に
 	statc[0 * 10 + 1] = 0;
@@ -1137,7 +1139,7 @@ void PracticeOver(void) {
 		medal_ac[1] = medal_ac[0];	// AC #1.60c7k4
 		medal_co[1] = medal_co[0];	// CO
 
-		time[1] = time[0];			// Time
+		time_game[1] = time_game[0];			// Time
 		wait1[1] = wait1[0];		//
 		wait2[1] = wait2[0];		//
 		wait3[1] = wait3[0];		//

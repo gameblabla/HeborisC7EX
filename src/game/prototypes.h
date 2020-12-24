@@ -166,7 +166,7 @@ void stat180field(int player);
 void statDelfromUpper(int player);
 void statBanana(int player);
 void GiziSRand(int player);
-int rand(int max,int player);
+int rand_game(int max,int player);
 int abs_YGS2K(int i);
 int getFieldBlock(int player, int bx1, int by1, int opt);
 int getFieldBlock2(int player, int bx1, int by1);
@@ -187,9 +187,9 @@ void removeBlock(int player, int bx1, int by1, int kind, int rotate);
 void removeBigBlock(int player, int bx1, int by1, int kind, int rotate);
 void testmenu(void);
 void initialize(void);
-void LoadGraphics(char *nameStr, int p1, int p2);
+void LoadGraphics(const char *nameStr, int p1, int p2);
 void LoadTitle();
-void LoadBackground(char *nameStr, int p1, int p2);
+void LoadBackground(const char *nameStr, int p1, int p2);
 void loadGraphics(int players);
 void loadBG(int players,int vsmode);
 void loadWaves(void);
@@ -276,11 +276,13 @@ void viewbesttimes3(int player,int x,int y,int type);
 void viewbesttime3(int player,int x,int y,int type);
 int viewgrade(int player);
 
+
+int readdef();
 // readdef.c
-namespace readdef
+/*namespace readdef
 {
 	int readdef();
-};
+};*/
 
 // replay.c
 void ReplaySaveCheck(int player, int statnumber);
@@ -364,12 +366,12 @@ void viewField(void);
 void viewPreview(void);
 void viewFldBackground(void);
 void viewFldFrame(int uponly,int i);
-void printFont(int fontX, int fontY, char *fontStr, int fontColor);
-void printFontEx(int fontX, int fontY, char *fontStr, int fontColor);
-void printSMALLFont(int fontX, int fontY, char *fontStr, int fontColor);
-void printSMALLFontEX(int fontX, int fontY, char *fontStr, int fontColor);
-void printBIGFont(int fontX, int fontY, char *fontStr, int fontColor);
-void printTinyFont(int fontX, int fontY, char *fontStr);
+void printFont(int fontX, int fontY, const char *fontStr, int fontColor);
+void printFontEx(int fontX, int fontY, const char *fontStr, int fontColor);
+void printSMALLFont(int fontX, int fontY, const char *fontStr, int fontColor);
+void printSMALLFontEX(int fontX, int fontY, const char *fontStr, int fontColor);
+void printBIGFont(int fontX, int fontY, const char *fontStr, int fontColor);
+void printTinyFont(int fontX, int fontY, const char *fontStr);
 int getBlockPlaneNo(int player, int color);
 int getBigBlock_add(int player);
 void drawBlockFast(int bx1, int by1, int kind, int rotate, int color, int bright, int offset, int flash, int player, int use3D);

@@ -1,3 +1,5 @@
+#include "gamestart.h"
+
 // シングル台対応 & エンディング時に↓か↑を押しても点を増加させない#1.60c6.1a
 // 接着99, Big対応　#1.60c7
 /*
@@ -186,14 +188,14 @@ void statWMove(int player, int kickm, int kickr) {
 			} else if( gameMode[player] == 6 ) {
 				/* TOMOYO */
 				//ステージ20以降（ステージタイム無し）
-				if((repversw >= 44) && (stage[player] > 19) && (ltime[player] % p_rollroll_timer == 0))
+				if((repversw >= 44) && (stage[player] > 19) && (ltime_game[player] % p_rollroll_timer == 0))
 					rolling = 1;
 				//ステージ19まで
-				else if( stime[player] % p_rollroll_timer == 0 )
+				else if( stime_game[player] % p_rollroll_timer == 0 )
 					rolling = 1;
 			} else if( (gameMode[player] >= 4) || (item_mode[player]) ) {
 				/* VERSUS / PRACTICE / MISSION */
-				if( time[player] % p_rollroll_timer  == 0 )
+				if( time_game[player] % p_rollroll_timer  == 0 )
 					rolling = 1;
 			}
 		}
@@ -211,7 +213,7 @@ void statWMove(int player, int kickm, int kickr) {
 				bak = (rt[player] + move);
 				if(istrance[player]){
 					do{
-						k = rand(7,player);
+						k = rand_game(7,player);
 						setNextBlockColors(player, 1);
 					}while(k == blk[player]);
 				}else{

@@ -1,9 +1,7 @@
 #ifndef GL_KANJI_INCLUDE
 #define GL_KANJI_INCLUDE
 
-#include <vector>
-
-
+#if		SDL_USE_OPENGL
 namespace ist {
 
 class glKanji
@@ -32,5 +30,6 @@ protected:
 };
 
 } // ist
+#endif
 
 #endif

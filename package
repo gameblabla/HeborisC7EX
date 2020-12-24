@@ -1,7 +1,7 @@
 #!/bin/sh
 
 mkdir -p opk
-cp ./heboris opk/heboris.elf
+cp ./heboris.elf opk/heboris.elf
 cp ./icon.png opk/icon.png
 cp -r ./res opk/
 

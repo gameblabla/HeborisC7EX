@@ -1,3 +1,5 @@
+#include "gamestart.h"
+
 //▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽
 //  ランキング関連
 //▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲
@@ -9,7 +11,7 @@ void RankingInit(void) {
 			rksc[i * 5 + j] = 5000 - 1000 * j;
 			rkbl[i * 5 + j] = 25 - 5* j;
 			rklv[i * 5 + j] = 50 - 10 * j;
-			rktime[i * 5 + j] = 10800 - 1800 * j;
+			rktime_game[i * 5 + j] = 10800 - 1800 * j;
 			StrCpy(string[30 + 5 * i + j], "NOP");
 			rkfl[i * 5 + j] = 0;
 		}
@@ -17,7 +19,8 @@ void RankingInit(void) {
 }
 
 void RankingConvert(void) {
-	int	i, j, temp, temp2[3];
+	int	i, j, temp;
+	char temp2[3];
 
 	LoadFile("config/data/RANKING.SAV", &saveBuf, 1312);
 	for(i = 0; i < 40; i++) {
@@ -25,9 +28,9 @@ void RankingConvert(void) {
 		rksc[i] = saveBuf[temp + 0];
 		rkbl[i] = saveBuf[temp + 1];
 		rklv[i] = saveBuf[temp + 2];
-		rktime[i] = saveBuf[temp + 3];
+		rktime_game[i] = saveBuf[temp + 3];
 		temp2[0] = saveBuf[temp + 4];
-		StrCpy(string[30 + i], &temp2);
+		strcpy(string[30 + i], temp2);
 	}
 
 	for(i = 0; i < 4; i++) {
@@ -35,7 +38,7 @@ void RankingConvert(void) {
 			rksc[i * 10 + j + 5] = 5000 - 1000 * j;
 			rkbl[i * 10 + j + 5] = 25 - 5* j;
 			rklv[i * 10 + j + 5] = 50 - 10 * j;
-			rktime[i * 10 + j + 5] = 10800 - 1800 * j;
+			rktime_game[i * 10 + j + 5] = 10800 - 1800 * j;
 			rkfl[i * 10 + j + 5] = 0;
 			StrCpy(string[30 + 10 * i + j + 5], "NOP");
 		}
@@ -56,7 +59,7 @@ int RankingCheck(int rmode, int rtt, int rsc, int rtime, int rlv, int end) {
 		for(i = 0; i < 5; i++) {
 			// 完全クリアフラグが立っていたら上位に来る #1.60c7k3
 			if( (end >= rkfl[j+ i]) && ((rlv > rklv[j+ i]) ||
-				 (rlv == rklv[j+ i])&&(rtime < rktime[j+ i])) ) {
+				 (rlv == rklv[j+ i])&&(rtime < rktime_game[j+ i])) ) {
 				rank = i;
 				break;
 			}
@@ -85,7 +88,7 @@ void RankingRegist(int rmode, int rtt, int rsc, int rli, int rlv, int rtime, int
 		rksc[temp] = rksc[temp - 1];
 		rkbl[temp] = rkbl[temp - 1];
 		rklv[temp] = rklv[temp - 1];
-		rktime[temp] = rktime[temp - 1];
+		rktime_game[temp] = rktime_game[temp - 1];
 		StrCpy(string[30 + temp], string[30 + temp - 1]);
 		rkfl[temp] = rkfl[temp - 1];
 	}
@@ -94,7 +97,7 @@ void RankingRegist(int rmode, int rtt, int rsc, int rli, int rlv, int rtime, int
 	rksc[temp] = rsc;
 	rkbl[temp] = rli;
 	rklv[temp] = rlv;
-	rktime[temp] = rtime;
+	rktime_game[temp] = rtime;
 	StrCpy(string[30 + temp], rname);
 	rkfl[temp] = end;
 }
@@ -176,7 +179,7 @@ void RankingCreate(int cat, int mode) {
 		if(i == 2) StrCpy(string[3], "RD");
 
 		j = cat* 10 +mode* 5 + i;
-		getTime(rktime[j]);
+		getTime(rktime_game[j]);
 		sprintf(string[10 + i], "%2d%s %7d %3d %4d  %s  %s",
 			i + 1, string[3], rksc[j], rklv[j], rkbl[j], string[0], string[30 + j]);
 	}
@@ -263,12 +266,12 @@ int RankingView(void) {
 		if(rankingmode) {
 			sprintf(string[0], "%7d", rksc[category * 10 + rankingmode * 5 + i]);
 			printFont(xxx + 25, 4 * i + 10, string[0], col);
-			getTime(rktime[category * 10 + rankingmode * 5 + i]);
+			getTime(rktime_game[category * 10 + rankingmode * 5 + i]);
 			printBIGFont((xxx + 11) * 8, (4 * i + 9) * 8, string[0], col);
 		} else {
 			sprintf(string[0], "%7d", rksc[category * 10 + rankingmode * 5 + i]);
 			printBIGFont((xxx + 11) * 8, (4 * i + 9) * 8, string[0], col);
-			getTime(rktime[category * 10 + rankingmode * 5 + i]);
+			getTime(rktime_game[category * 10 + rankingmode * 5 + i]);
 			printFont(xxx + 25, 4 * i + 10, string[0], col);
 		}
 		sprintf(string[0], "%5d/%3d", rklv[category * 10 + rankingmode * 5 + i], rkbl[category * 10 + rankingmode * 5 + i]);
@@ -283,7 +286,8 @@ int RankingView(void) {
 }
 
 int RankingSave(void) {
-	int i, temp, temp2[3];
+	int i, temp;
+	char temp2[3];
 
 	FillMemory(&saveBuf, 50000 * 4, 0);
 
@@ -301,8 +305,8 @@ int RankingSave(void) {
 		saveBuf[temp + 0] = rksc[i];
 		saveBuf[temp + 1] = rkbl[i];
 		saveBuf[temp + 2] = rklv[i];
-		saveBuf[temp + 3] = rktime[i];
-		StrCpy(&temp2, string[30 + i]);
+		saveBuf[temp + 3] = rktime_game[i];
+		StrCpy(temp2, string[30 + i]);
 		saveBuf[temp + 4] = temp2[0];
 		saveBuf[temp + 5] = rkfl[i];
 	}
@@ -313,7 +317,8 @@ int RankingSave(void) {
 }
 
 int RankingLoad(void) {
-	int i, temp, temp2[3];
+	int i, temp;
+	char temp2[3];
 
 	FillMemory(&saveBuf, 50000 * 4, 0);
 
@@ -333,9 +338,9 @@ int RankingLoad(void) {
 		rksc[i] = saveBuf[temp + 0];
 		rkbl[i] = saveBuf[temp + 1];
 		rklv[i] = saveBuf[temp + 2];
-		rktime[i] = saveBuf[temp + 3];
+		rktime_game[i] = saveBuf[temp + 3];
 		temp2[0] = saveBuf[temp + 4];
-		StrCpy(string[30 + i], &temp2);
+		StrCpy(string[30 + i], temp2);
 		rkfl[i] = saveBuf[temp + 5];
 	}
 

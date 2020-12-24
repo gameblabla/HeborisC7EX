@@ -1,22 +1,30 @@
-CXX          ?= clang++
-INCLUDE_PATH := -I/usr/include/SDL -Isrc/game/ -Isrc/main_sdl -Isrc/
-CXXFLAGS     += -O2 -DLINUX -DSDL_USE_OPENGL $(shell sdl-config --cflags)
-CXXWARNINGS  := -Wno-c++11-compat-deprecated-writable-strings -Wno-format-extra-args \
-				-Wno-invalid-source-encoding -Wno-logical-op-parentheses \
-				-Wno-write-strings
-LDLIBS       := -lGL -lSDL -lSDL_mixer -lSDL_image
-PROGRAM_NAME := heboris
+PRGNAME     = heboris.elf
+CC			= gcc
 
-all: make_directories $(PROGRAM_NAME)
+SRCDIR		= ./src/game/ ./src/main_sdl ./src/ ./src/script
+VPATH		= $(SRCDIR)
+SRC_C		= $(foreach dir, $(SRCDIR), $(wildcard $(dir)/*.c))
+OBJ_C		= $(notdir $(patsubst %.c, %.o, $(SRC_C)))
+OBJS		= $(OBJ_C)
 
-$(PROGRAM_NAME):
-	$(CXX) $(INCLUDE_PATH) $(CXXFLAGS) $(CXXWARNINGS) \
-	src/game/*.cpp src/main_sdl/*.cpp $(LDLIBS) -o $(PROGRAM_NAME)
+CFLAGS		= -O2 -Wall -Wextra
+CFLAGS		+= -DLINUX -DHOME_SAVE
+CFLAGS		+= -Isrc/game/ -Isrc/main_sdl -Isrc/ -Isrc/script
 
-make_directories:
-	@mkdir -p "replay" "config/data"
+ifeq ($(PROFILE), YES)
+CFLAGS 		+= -fprofile-generate=./
+else ifeq ($(PROFILE), APPLY)
+CFLAGS		+= -fprofile-use -fbranch-probabilities
+endif
+
+LDFLAGS     = -nodefaultlibs -lc -lgcc -lm -lSDL -lSDL_mixer -lSDL_image -Wl,--as-needed -Wl,--gc-sections -flto 
+
+# Rules to make executable
+$(PRGNAME): $(OBJS)  
+	$(CC) $(CFLAGS) -o $(PRGNAME) $^ $(LDFLAGS)
+
+$(OBJ_C) : %.o : %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f $(PROGRAM_NAME)
-
-.PHONY: clean make_directories
+	rm -f $(PRGNAME) *.o

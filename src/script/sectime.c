@@ -1,10 +1,12 @@
+#include "gamestart.h"
+
 //▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽
 //  セクションタイムランキング関連
 //▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲
 int		st_version = 2;	// バージョン
 						// 0:無効 1:c7p6/
 //30*3　(ビギ+マス123+20G), デビ+マス4,トモ が30づつ(ただし表示数は違う)
-int		st_time[90];	// タイム
+int		st_time_game[90];	// タイム
 int		st_end[90];		// 0:未カンスト 1:ロール途中窒息 2:完全クリア
 int		st_lvstop[90];		//レベルストップした時間
 int		st_others[90];		//落としたブロック数
@@ -15,7 +17,7 @@ void ST_RankingInit(void) {
 	int	i, j;
 
 	for(i=0; i<90; i++) {
-		st_time[i] = 5400;
+		st_time_game[i] = 5400;
 		st_end[i] = 0;
 		st_lvstop[i] = 0;
 		st_others[i] = 0;
@@ -32,19 +34,19 @@ int ST_RankingCheck(int player, int rmode, int section,int enable_grade) {
 	tmp = ST_rankingGet(player,rmode,enable_grade);
 
 	//-5秒更新
-	if(lap_time[section + player * 100] <= st_time[section + tmp] - 300) {
+	if(lap_time_game[section + player * 100] <= st_time_game[section + tmp] - 300) {
 		return 4;
 	}
 	// 記録更新
-	if(lap_time[section + player * 100] <= st_time[section + tmp]) {
+	if(lap_time_game[section + player * 100] <= st_time_game[section + tmp]) {
 		return 3;
 	}
 	// 5秒以内
-	if(lap_time[section + player * 100] <= st_time[section + tmp] + 300) {
+	if(lap_time_game[section + player * 100] <= st_time_game[section + tmp] + 300) {
 		return 2;
 	}
 	// 10秒以内
-	if(lap_time[section + player * 100] <= st_time[section + tmp] + 600) {
+	if(lap_time_game[section + player * 100] <= st_time_game[section + tmp] + 600) {
 		return 1;
 	}
 
@@ -59,14 +61,14 @@ int ST_RankingCheckAll(int player, int rmode, int enable_grade) {
 
 	if(rmode == 6) {
 			for(i=0; i<stage[player]+ (stage[player] == laststage[player]); i++) {
-				if((stage_time[i + player * 30] <= st_time[i + tmp2]) && (stage_time[i + player * 30] != 0)) {
+				if((stage_time_game[i + player * 30] <= st_time_game[i + tmp2]) && (stage_time_game[i + player * 30] != 0)) {
 					return 1;
 				}
 			}
 	}
 	else if((rmode <= 3) && (rmode != 0)) {
 		for(i=0; i<(tc[player] / (st_record_interval_tgm * 10)) + ((rmode >= 1)&&(rmode <= 2)&&(tc[player] == 999)); i++) {
-			if((lap_time[i + player * 100] <= st_time[i + tmp2]) && (lap_time[i + player * 100] != 0)) {
+			if((lap_time_game[i + player * 100] <= st_time_game[i + tmp2]) && (lap_time_game[i + player * 100] != 0)) {
 				return 1;
 			}
 		}
@@ -80,7 +82,7 @@ int Stage_RankingCheck(int player, int rmode) {
 
 	tmp3 = ST_rankingGet(player,rmode,0);
 
-	if((stage_time[stage[player] + player * 30] <= st_time[stage[player] + tmp3]) && (stage_time[stage[player] + player * 30] != 0)) {
+	if((stage_time_game[stage[player] + player * 30] <= st_time_game[stage[player] + tmp3]) && (stage_time_game[stage[player] + player * 30] != 0)) {
 		return 1;
 	}
 	return 0;
@@ -93,8 +95,8 @@ void ST_RankingUpdate(int player, int rmode, int end,int enable_grade) {
 
 	if(rmode == 6){//TOMOYO
 		for(i=0; i<stage[player] + (stage[player] == laststage[player]); i++) {
-			if((stage_time[i + player * 30] <= st_time[i + tmp4]) && (stage_time[i + player * 30] != 0)) {
-				st_time[i + tmp4] = stage_time[i + player * 30];	// タイム
+			if((stage_time_game[i + player * 30] <= st_time_game[i + tmp4]) && (stage_time_game[i + player * 30] != 0)) {
+				st_time_game[i + tmp4] = stage_time_game[i + player * 30];	// タイム
 				st_end[i + tmp4] = end;
 				st_others[i + tmp4] = st_other[i + player * 30];
 			}
@@ -107,10 +109,10 @@ void ST_RankingUpdate(int player, int rmode, int end,int enable_grade) {
 	}
 
 	for(i=0; i<(tc[player] / (st_record_interval_tgm * 10)) + ((rmode >= 1)&&(rmode <= 2)&&(tc[player] == 999)); i++) {
-		if((lap_time[i + player * 100] <= st_time[i + tmp4]) && (lap_time[i + player * 100] != 0)) {
-			st_time[i + tmp4] = lap_time[i + player * 100];	// タイム
+		if((lap_time_game[i + player * 100] <= st_time_game[i + tmp4]) && (lap_time_game[i + player * 100] != 0)) {
+			st_time_game[i + tmp4] = lap_time_game[i + player * 100];	// タイム
 			st_end[i + tmp4] = end;		// エンディング到達
-			st_lvstop[i + tmp4] = lvstop_time[i + player * 20];
+			st_lvstop[i + tmp4] = lvstop_time_game[i + player * 20];
 			st_others[i + tmp4] = st_other[i + player * 30];
 		}
 	}
@@ -133,7 +135,7 @@ void ST_RankingSave(void) {//12345 6789
 	saveBuf[0] = st_version;
 
 	for(i=0;i<90;i++) {
-		saveBuf[i + 10] = st_time[i];
+		saveBuf[i + 10] = st_time_game[i];
 		saveBuf[i + 99] = st_end[i];
 		saveBuf[i + 188] = st_lvstop[i];
 		saveBuf[i + 277] = st_others[i];
@@ -159,7 +161,7 @@ int ST_RankingLoad(void) {
 	LoadFile("config/data/STRANKING.SAV", &saveBuf, 400 * 4);
 
 	for(i=0;i<90;i++) {
-		st_time[i] = saveBuf[i + 10];
+		st_time_game[i] = saveBuf[i + 10];
 		st_end[i] = saveBuf[i + 99];
 		st_lvstop[i] = saveBuf[i + 188];
 		st_others[i] = saveBuf[i + 277];
@@ -179,7 +181,7 @@ void viewbestSTtime(int player){
 			printFont(26+2*((hnext[player] >= 4) && (!player)) + 7 * player - 12 * maxPlay, 11, "BEST TIME", fontc[rots[player]]);
 
 			tempbest = ST_rankingGet(player,6,0);
-			getTime(st_time[stage[player] + tempbest]);
+			getTime(st_time_game[stage[player] + tempbest]);
 			printFont(26+2*((hnext[player] >= 4) && (!player)) + 7 * player - 12 * maxPlay, 12, string[0], color);
 	}
 }
@@ -200,7 +202,7 @@ void viewbestSTtimes(int player){
 			ExBltRect(3, 230+20*((hnext[player] >= 4) && (!player)) + 70 * player - 96 * maxPlay, 95, 180, 119, 19, 7);
 
 			tempbest = ST_rankingGet(player,6,0);
-			getTime(st_time[stage[player] + tempbest]);
+			getTime(st_time_game[stage[player] + tempbest]);
 			printSMALLFont((26 + 8 * player - 12 * maxPlay)*8+20*((hnext[player] >= 4) && (!player)), 103, string[0], color);
 		}
 	}
@@ -325,7 +327,7 @@ void ST_RankingView() {
 				printFont(1, 4+i, string[0], tmp);
 
 				//タイム
-				getTime(st_time[i + tmp5]);
+				getTime(st_time_game[i + tmp5]);
 				printFont(11, 4+i, string[0], tmp);
 
 				//レベルストップ
@@ -337,7 +339,7 @@ void ST_RankingView() {
 				printFont(29, 4+i, string[0], tmp);
 
 				//BPS
-				bps = (st_others[i + tmp5] * 1000) / (st_time[i + tmp5] / 60);
+				bps = (st_others[i + tmp5] * 1000) / (st_time_game[i + tmp5] / 60);
 				bps1 = bps / 1000;//整数
 				bps2 = bps % 1000;//下三桁
 				sprintf(string[0],"%d.",bps1);
@@ -365,7 +367,7 @@ void ST_RankingView() {
 					printFont(2, 4+i, string[0], tmp);
 
 					//タイム
-					getTime(st_time[i + tmp5]);
+					getTime(st_time_game[i + tmp5]);
 					printFont(6, 4+i, string[0], tmp);
 
 					//使用ブロック数
@@ -377,7 +379,7 @@ void ST_RankingView() {
 					printFont(20, i - 16, string[0], tmp);
 
 					//タイム
-					getTime(st_time[i + tmp5]);
+					getTime(st_time_game[i + tmp5]);
 					printFont(26, i - 16, string[0], tmp);
 
 					//使用ブロック数
@@ -390,7 +392,7 @@ void ST_RankingView() {
 		// 合計数表示
 		tmp = 0;
 		for(i=0; i<max; i++) {
-			tmp = tmp + st_time[i + tmp5];
+			tmp = tmp + st_time_game[i + tmp5];
 		}
 		printFont(1, 25, "TOTAL TIME", 1);
 		getTime(tmp);
@@ -440,7 +442,7 @@ void PlayerdataSave(void) {//12345 6789
 			saveBuf[1 + i + 5 * j] =grade_his[i+j*5];
 		}
 		saveBuf[1 + 10 + j]=admit_grade[j];
-		saveBuf[1 + 12 + j]=grade_pasttime[j];
+		saveBuf[1 + 12 + j]=grade_pasttime_game[j];
 	}
 
 	SaveFile("config/data/PLAYERDATA.SAV", &saveBuf, 100 * 4);
@@ -467,7 +469,7 @@ int PlayerdataLoad(void) {
 			grade_his[i+j*5]=saveBuf[1 + i + 5 * j];
 		}
 		admit_grade[j] = saveBuf[1 + 10 + j];
-		grade_pasttime[j]=saveBuf[1 + 12 + j];
+		grade_pasttime_game[j]=saveBuf[1 + 12 + j];
 	}
 	return 0;
 }

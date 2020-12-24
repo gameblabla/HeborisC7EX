@@ -1,22 +1,30 @@
-CXX          = /opt/gcw0-toolchain/bin/mipsel-linux-g++
-INCLUDE_PATH := -Isrc/game/ -Isrc/main_sdl -Isrc/
-CXXFLAGS     += -Ofast -mno-shared -mplt -fdata-sections -ffunction-sections -mframe-header-opt -mno-fp-exceptions -mno-check-zero-division -fsingle-precision-constant -fno-common -march=mips32r2 -mtune=mips32r2 -flto -DLINUX -DHOME_SAVE
-CXXWARNINGS  := -Wno-c++11-compat-deprecated-writable-strings -Wno-format-extra-args \
-				-Wno-invalid-source-encoding -Wno-logical-op-parentheses \
-				-Wno-write-strings
-LDLIBS       :=  -lSDL -lSDL_mixer -lSDL_image -flto -Wl,--as-needed -Wl,--gc-sections -no-pie -s
-PROGRAM_NAME := heboris
+PRGNAME     = heboris.elf
+CC			= /opt/gcw0-toolchain/bin/mipsel-linux-gcc
 
-all: make_directories $(PROGRAM_NAME)
+SRCDIR		= ./src/game/ ./src/main_sdl ./src/ ./src/script
+VPATH		= $(SRCDIR)
+SRC_C		= $(foreach dir, $(SRCDIR), $(wildcard $(dir)/*.c))
+OBJ_C		= $(notdir $(patsubst %.c, %.o, $(SRC_C)))
+OBJS		= $(OBJ_C)
 
-$(PROGRAM_NAME):
-	$(CXX) $(INCLUDE_PATH) $(CXXFLAGS) $(CXXWARNINGS) \
-	src/game/*.cpp src/main_sdl/*.cpp -o $(PROGRAM_NAME) $(LDLIBS)
+CFLAGS		= -O3 -mplt -mno-shared -fdata-sections -ffunction-sections -mframe-header-opt -fno-common -march=mips32r2 -mtune=mips32r2 -flto
+CFLAGS		+= -DLINUX -DHOME_SAVE 
+CFLAGS		+= -Isrc/game/ -Isrc/main_sdl -Isrc/ -Isrc/script
 
-make_directories:
-	@mkdir -p "replay" "config/data"
+ifeq ($(PROFILE), YES)
+CFLAGS 		+= -fprofile-generate=./
+else ifeq ($(PROFILE), APPLY)
+CFLAGS		+= -fprofile-use -fbranch-probabilities
+endif
+
+LDFLAGS     =  -nodefaultlibs -lc -lgcc -lSDL_mixer -lvorbisidec -logg -lmad -lmikmod -lSDL -lasound -lSDL_image -lpng -ljpeg -lz -flto -Wl,--as-needed -Wl,--gc-sections -no-pie -s
+
+# Rules to make executable
+$(PRGNAME): $(OBJS)  
+	$(CC) $(CFLAGS) -o $(PRGNAME) $^ $(LDFLAGS)
+
+$(OBJ_C) : %.o : %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f $(PROGRAM_NAME)
-
-.PHONY: clean make_directories
+	rm -f $(PRGNAME) *.o

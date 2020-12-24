@@ -12,14 +12,13 @@
 #include "gl_kanji.h"
 
 
-
+#ifdef SDL_USE_OPENGL
 class MatrixSaver
 {
 public:
 	MatrixSaver(int matrix_type) {
 		#ifdef SDL_USE_OPENGL
 		glGetFloatv(matrix_type, matrix);
-
 		switch(matrix_type) {
 		case GL_MODELVIEW_MATRIX:
 			matrix_mode = GL_MODELVIEW;
@@ -52,12 +51,12 @@ private:
 	int matrix_mode;
 	float matrix[16];
 };
+#endif
 
-
+#ifdef SDL_USE_OPENGL
 class ScreenMatrix {
 public:
 	ScreenMatrix() {
-		#ifdef SDL_USE_OPENGL
 		int viewport[4];
 
 		glGetIntegerv(GL_VIEWPORT, viewport);
@@ -69,14 +68,13 @@ public:
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		#endif
 	}
 
 	float proj_matrix[16];
 };
+#endif
 
-
-static void sjis2jis(unsigned char &c1, unsigned char &c2)
+static void sjis2jis(unsigned char c1, unsigned char c2)
 {
 	if (c1>=0xe0) { c1 = c1-0x40; }
 	if (c2>=0x80) { c2 = c2-1; }
@@ -89,14 +87,14 @@ static void sjis2jis(unsigned char &c1, unsigned char &c2)
 	}
 }
 
-static void euc2jis(unsigned char &c1, unsigned char &c2)
+static void euc2jis(unsigned char c1, unsigned char c2)
 {
 	c1-=0x80;
 	c2-=0x80;
 }
 
 
-
+#ifdef SDL_USE_OPENGL
 namespace ist {
 
 glKanji::glKanji(int _code)
@@ -210,4 +208,4 @@ bool glKanji::load(const char *filename)
 }
 
 } // ist
-
+#endif

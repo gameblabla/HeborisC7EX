@@ -1,3 +1,5 @@
+#include "gamestart.h"
+
 //▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽
 //  スタッフロールデータを初期化
 //▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲
@@ -29,16 +31,16 @@ void staffExecute(int player) {
 void staffRoll(int player) {
 	if( (ending[player] == 2) && (onRecord[player]) && (!pause_game[player]) ) {
 		if(fastroll[player]){
-			endtime[player]=endtime[player]+2; // 経過時間+1 #1.60c7o6
+			endtime_game[player]=endtime_game[player]+2; // 経過時間+1 #1.60c7o6
 		}else{
-			endtime[player]++; // 経過時間+1 #1.60c7o6
+			endtime_game[player]++; // 経過時間+1 #1.60c7o6
 		}
 		//無限回転対策
 		if((repversw >= 55) && (gameMode[player] >= 1) && ((kickc[player] > 10) || (kickc3[player] > 8)) ){
-			endtime[player] = endtime[player] - 1 - (fastroll[player]);
+			endtime_game[player] = endtime_game[player] - 1 - (fastroll[player]);
 		}else{
 			// 上に移動
-			if( (endtime[player] % 2 == 0) && (endtime[player] < 3100) && (!pause_game[player]) ){
+			if( (endtime_game[player] % 2 == 0) && (endtime_game[player] < 3100) && (!pause_game[player]) ){
 				staffroll_y_ex[player]++;
 			}
 		}

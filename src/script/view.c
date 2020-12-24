@@ -1,3 +1,5 @@
+#include "gamestart.h"
+
 //▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽
 //  デモ画面での操作状況
 //▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲
@@ -670,7 +672,7 @@ void viewScoreSmall(void) {
 					//TOTAL TIME
 					ExBltRect(85, 208+add + 54 * i - 96 * maxPlay, 50, 35, 13*7, 25, 7);
 					ExBltRect(85, 231+add + 54 * i - 96 * maxPlay, 50, 35, 12*7, 19, 7);
-					getTime(time[i]);
+					getTime(time_game[i]);
 					printSMALLFont((26 + 6 * i - 12 * maxPlay)*8+add, 58, string[0], color);
 					// BEST TIME
 					if(ranking_type==1){
@@ -694,7 +696,7 @@ void viewScoreSmall(void) {
 			if(gameMode[i] == 8){
 				ExBltRect(85, 208+add + 54 * i - 96 * maxPlay, 50, 35, 13*7, 25, 7);
 				ExBltRect(85, 231+add + 54 * i - 96 * maxPlay, 50, 35, 12*7, 19, 7);
-				getTime(time[i]);
+				getTime(time_game[i]);
 				printSMALLFont((26 + 6 * i - 12 * maxPlay)*8+add, 58, string[0], color);
 			}
 // SIMPLE (STANDARD)
@@ -706,7 +708,7 @@ void viewScoreSmall(void) {
 						else sprintf(string[0], "%d", relayround[i] + (1 * (relayround[i] < 9)));
 						printSMALLFont(208+add + 84 * i - 96 * maxPlay, 40, string[0], color);
 						if(stat_game[i] != 2){
-							ExBltRect(87,208 + 48 * i - 96 * maxPlay, 102, (time[i]%6)*48 ,(time[i]%30/6)*48,48,48);
+							ExBltRect(87,208 + 48 * i - 96 * maxPlay, 102, (time_game[i]%6)*48 ,(time_game[i]%30/6)*48,48,48);
 							ExBltRect(85,208 + 70 * i - 96 * maxPlay, 105, 35, 7*6, 22, 7);
 							ExBltRect(55,201 + 48 * i - 96 * maxPlay, 121 - (3 * (getDrawRate() == 1)), 64*rots[i] ,
 									32*fontc[rots[i]] + (7 * (getDrawRate() == 1)),64,12 + (5 * (getDrawRate() == 1)));
@@ -727,8 +729,8 @@ void viewScoreSmall(void) {
 						ExBltRect(85, 238+add + 45* i - 96 * maxPlay, 50, 70, 0,7, 7);
 						ExBltRect(85, 244+add + 45 * i - 96 * maxPlay, 50, 70, 7*9,35, 7);
 					}
-					if(time[i]>120){//開始二秒は表示させない
-						bps[i] = (li[i] * 100 *60*60) / (time[i]);
+					if(time_game[i]>120){//開始二秒は表示させない
+						bps[i] = (li[i] * 100 *60*60) / (time_game[i]);
 						bps1[i] = bps[i] / 100;//整数
 						bps2[i] = bps[i] % 100;//下三桁
 						if(i) {sprintf(string[0], "%3d?", bps1[i]);
@@ -762,8 +764,8 @@ void viewScoreSmall(void) {
 						ExBltRect(85, 240+add + 50 * i - 96 * maxPlay, 70, 0, 7*12,35, 7);
 					}
 
-					if(time[i]>120){
-						bps[i] = (bdowncnt[i] * 10000*60) / (time[i]);
+					if(time_game[i]>120){
+						bps[i] = (bdowncnt[i] * 10000*60) / (time_game[i]);
 						bps1[i] = bps[i] / 10000;//整数
 						bps2[i] = bps[i] % 10000;//下三桁
 						if(i) {
@@ -819,7 +821,7 @@ void viewScoreSmall(void) {
 					}
 					//SCORE/ライン
 
-					if((time[i]>120)&&(li[i]>0)){
+					if((time_game[i]>120)&&(li[i]>0)){
 						bps1[i] = sc[i] / li[i];//整数
 						bps2[i] = sc[i] % li[i];//下三桁
 						if(i) {sprintf(string[0], "%2d?", bps1[i]);
@@ -1176,24 +1178,24 @@ void viewTime(void) {
 					// 記録タイムをシングル台でも右側に出す設定追加 #1.60c7j8
 					if((!maxPlay)&&(!st_record_force_viewright)) {
 						for(j = 0; j < (tc[i] / (st_record_interval_tgm * 10)); j++) {
-							if( (lap_time[j] != 0) && (split_time[j] != 0) ) {
+							if( (lap_time_game[j] != 0) && (split_time_game[j] != 0) ) {
 								sprintf(string[0], "%4d", (j + 1) * st_record_interval_tgm * 10);
 								printFont(0, j, string[0], fontc[rots[i]]);
-								getTime(lap_time[j]);
+								getTime(lap_time_game[j]);
 								printFont(5, j, string[0], st_new[j + i * 13]);
-								getTime(split_time[j]);
+								getTime(split_time_game[j]);
 								printFont(32, j, string[0], color);
 							}
 						}
 					// MASTERでL999の場合は表示が被ってしまうため非表示 #1.60c7k7
 					} else if( (gameMode[i] >= 3) || (tc[i] != 999) ) {
-						j = split_time[tc[i] / (st_record_interval_tgm * 10) - 1 + i * 130];
+						j = split_time_game[tc[i] / (st_record_interval_tgm * 10) - 1 + i * 130];
 						if(j != 0) {
 							getTime(j);
 							printFont(26 + 4 * i - 12 * maxPlay, i * 2, string[0], color);
 						}
 
-						j = lap_time[tc[i] / (st_record_interval_tgm * 10) - 1 + i * 130];
+						j = lap_time_game[tc[i] / (st_record_interval_tgm * 10) - 1 + i * 130];
 						if(j != 0) {
 							getTime(j);
 							printFont(26 + 4 * i - 12 * maxPlay, 1 + i * 2, string[0], st_new[tc[i] / (st_record_interval_tgm * 10) - 1 + i * 13]);
@@ -1204,22 +1206,22 @@ void viewTime(void) {
 				if((gameMode[i] >= 1) && (gameMode[i] <= 2) && (tc[i] == 999)) {
 					// シングル台
 					if((!maxPlay)&&(!st_record_force_viewright)) {
-						if( (lap_time[9] != 0) && (split_time[9] != 0) ) {
+						if( (lap_time_game[9] != 0) && (split_time_game[9] != 0) ) {
 							printFont(0, 9, " 999", fontc[rots[i]]);
-							getTime(lap_time[9]);
+							getTime(lap_time_game[9]);
 							printFont(5, 9, string[0], st_new[9]);
-							getTime(split_time[9]);
+							getTime(split_time_game[9]);
 							printFont(32, 9, string[0], color);
 						}
 					// ダブル台
 					} else {
-						j = split_time[1000 / (st_record_interval_tgm * 10) - 1 + i * 130];
+						j = split_time_game[1000 / (st_record_interval_tgm * 10) - 1 + i * 130];
 						if(j != 0){
 							getTime(j);
 							printFont(26 + 4 * i - 12 * maxPlay, i * 2, string[0], st_new[1000 / (st_record_interval_tgm * 10) - 1 + i * 13]);
 						}
 
-						j = lap_time[1000 / (st_record_interval_tgm * 10) - 1 + i * 130];
+						j = lap_time_game[1000 / (st_record_interval_tgm * 10) - 1 + i * 130];
 						if(j != 0){
 							getTime(j);
 							printFont(26 + 4 * i - 12 * maxPlay, 1 + i * 2, string[0], st_new[9]);
@@ -1232,23 +1234,23 @@ void viewTime(void) {
 					// 記録タイムをシングル台でも右側に出す設定追加 #1.60c7j8
 					if((!maxPlay)&&(!st_record_force_viewright)) {
 						for(j = 0; j < (lv[i] / st_record_interval_heb); j++) {
-							if( (lap_time[j] != 0) && (split_time[j] != 0) ) {
+							if( (lap_time_game[j] != 0) && (split_time_game[j] != 0) ) {
 								sprintf(string[0], "%4d", (j + 1) * st_record_interval_heb);
 								printFont(0, j, string[0], fontc[rots[i]]);
-								getTime(lap_time[j]);
+								getTime(lap_time_game[j]);
 								printFont(5, j, string[0], color);
-								getTime(split_time[j]);
+								getTime(split_time_game[j]);
 								printFont(32, j, string[0], color);
 							}
 						}
 					} else {
-						j = split_time[lv[i] / st_record_interval_heb - 1 + i * 130];
+						j = split_time_game[lv[i] / st_record_interval_heb - 1 + i * 130];
 						if(j != 0) {
 							getTime(j);
 							printFont(26 + 4 * i - 12 * maxPlay, i * 2, string[0], color);
 						}
 
-						j = lap_time[lv[i] / st_record_interval_heb - 1 + i * 130];
+						j = lap_time_game[lv[i] / st_record_interval_heb - 1 + i * 130];
 						if(j != 0) {
 							getTime(j);
 							printFont(26 + 4 * i - 12 * maxPlay, 1 + i * 2, string[0], color);
@@ -1259,16 +1261,16 @@ void viewTime(void) {
 		}
 
 		/* タイム表示 */
-		if(time[i] > 359999) time[i] = 359999;
+		if(time_game[i] > 359999) time_game[i] = 359999;
 
 		// 持久モード
 		if( gameMode[i] != 6 ) {
 			if( (ending[i] == 2) && ((gameMode[i] == 5) || (debug)) ) {
 				getTime(3740 - edrec[i]);	// エンディング残り時間
 			} else if( ((gameMode[i] == 7)&(anothermode[i]!=3)) || (gameMode[i] == 8) ||((gameMode[i]==9)&&(std_opt[i]==1))||((gameMode[i]==5)&&(p_goaltype==4))) {
-				getTime(ltime[i]);			// ACEモード制限時間
+				getTime(ltime_game[i]);			// ACEモード制限時間
 			} else {
-				getTime(time[i]);			// 経過時間
+				getTime(time_game[i]);			// 経過時間
 			}
 
 			if( (gameMode[i] == 4) && (i == 0) ) {
@@ -1277,12 +1279,12 @@ void viewTime(void) {
 					ExBltRect(81, 110 - 96, 215,0,228+18*english, 100, 18);
 				} else {
 					// 制限時間 #1.60c7r5
-					color2 = (count % 4 / 2) * (ltime[i] <= 15 * 60) * 2;
-					getTime(ltime[i]);
+					color2 = (count % 4 / 2) * (ltime_game[i] <= 15 * 60) * 2;
+					getTime(ltime_game[i]);
 					printBIGFont(112, 216, string[0], color2);
 				}
 				ExBltRect(85, 150, 190, 35, 12*7, 19, 7);
-				getTime(time[i]);
+				getTime(time_game[i]);
 				printSMALLFont(136, 199, string[0], 0);
 				if((vsmodesl>0)&&(!demo)){
 					ExBltRect(85, 135, 100, 0, 7*16+vsmodesl*7, 100, 7);
@@ -1296,11 +1298,11 @@ void viewTime(void) {
 					else
 						color2 = color;
 					getTime(3740 - edrec[i] + 1);
-				}else if(((gameMode[i] == 7) || (gameMode[i] == 8)) && (ltime[i] <= 10 * 60) && (timeOn[i]))
+				}else if(((gameMode[i] == 7) || (gameMode[i] == 8)) && (ltime_game[i] <= 10 * 60) && (timeOn[i]))
 					color2 = (count % 4 / 2) * (2 + (4 * ((gameMode[i] == 8) && (mission_type[c_mission] == 23))));
 				else
 					color2 = color;
-				if((gameMode[i]!=8)||(mission_time[c_mission] > 0)){
+				if((gameMode[i]!=8)||(mission_time_game[c_mission] > 0)){
 					printBIGFont(112 + 192 * i - 96 * maxPlay, 216, string[0], color2);
 				}else{
 					ExBltRect(81, 110 + 192 * i - 96 * maxPlay, 215,0,228+18*english, 100, 18);
@@ -1312,26 +1314,26 @@ void viewTime(void) {
 			// 通常ステージ
 			if( stage[i] <= 19 ) {
 				// ステージタイム
-				getTime(stime[i]);
+				getTime(stime_game[i]);
 				printFont(16 + 24 * i - 12 * maxPlay, 27, string[0], 1);
 
 				// リミットタイム
-				color2 = (count % 4 / 2) * (ltime[i] <= 10 * 60) * 2;
-				getTime(ltime[i]);
+				color2 = (count % 4 / 2) * (ltime_game[i] <= 10 * 60) * 2;
+				getTime(ltime_game[i]);
 				printFont(16 + 24 * i - 12 * maxPlay, 28, string[0], color2);
 			}
 
 			// EXステージ #1.60c7m1fpbas_mode
 			else if(!fpbas_mode[i]){
-				if(ltime[i] <= 10 * 60){
+				if(ltime_game[i] <= 10 * 60){
 					color2 = (count % 4 / 2) * 2;
 				}else{
 					color2 = color;
 				}
-				getTime(ltime[i]);
+				getTime(ltime_game[i]);
 				printBIGFont(112 + 192 * i - 96 * maxPlay, 216, string[0], color2);
 			}else {
-				getTime(time[i]);			// 経過時間
+				getTime(time_game[i]);			// 経過時間
 				printBIGFont(112 + 192 * i - 96 * maxPlay, 216, string[0], color);
 			}
 		}
@@ -1705,9 +1707,9 @@ void viewField(void) {
 								}
 							}
 						}/* if(fi != -1) */
-						if((navigation) && (gameMode[i] == 0) && (tc[i] < navigation_limitLv) && (b) && (navigation_time[i] <= navigation_limittime) && (stat_game[i] == 5)){
+						if((navigation) && (gameMode[i] == 0) && (tc[i] < navigation_limitLv) && (b) && (navigation_time_game[i] <= navigation_limittime) && (stat_game[i] == 5)){
 							if((fld[k + j * 10 + i * 220] == 0) && (cp_fld[k + j * 10 + i * 220] == c_cblk_r[i] + 1)){
-								ExBltRect(29, (k + 15 + 24 * i - 12 * maxPlay) * 8, (j+ 3) * 8, ((c_cblk[i]-1) * 8), (((navigation_time[i] % 20)/2) * 8)+38, 8, 8);
+								ExBltRect(29, (k + 15 + 24 * i - 12 * maxPlay) * 8, (j+ 3) * 8, ((c_cblk[i]-1) * 8), (((navigation_time_game[i] % 20)/2) * 8)+38, 8, 8);
 							}
 						}
 					}
@@ -2049,7 +2051,7 @@ void viewFldFrame(int uponly,int i) {
 //▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽
 //  フォントを表示する
 //▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲
-void printFont(int fontX, int fontY, char *fontStr, int fontColor) {
+void printFont(int fontX, int fontY, const char *fontStr, int fontColor) {
 	int		i, sx, sy, stringLength, stringChar;
 
 	stringLength = StrLen(fontStr);
@@ -2062,7 +2064,7 @@ void printFont(int fontX, int fontY, char *fontStr, int fontColor) {
 }
 
 // 1ドットずつY座標を指定できるバージョン #1.60c7k3
-void printFontEx(int fontX, int fontY, char *fontStr, int fontColor) {
+void printFontEx(int fontX, int fontY, const char *fontStr, int fontColor) {
 	int		i, sx, sy, stringLength, stringChar;
 
 	stringLength = StrLen(fontStr);
@@ -2081,7 +2083,7 @@ void printFontEx(int fontX, int fontY, char *fontStr, int fontColor) {
 // =→m
 // >→%
 // ?→.
-void printSMALLFont(int fontX, int fontY, char *fontStr, int fontColor) {
+void printSMALLFont(int fontX, int fontY, const char *fontStr, int fontColor) {
 	int		i, sx, sy, stringLength, stringChar;
 
 	stringLength = StrLen(fontStr);
@@ -2112,7 +2114,7 @@ void printSMALLFont(int fontX, int fontY, char *fontStr, int fontColor) {
 	}
 }
 // 6 x 9のグリッド単位で座標を指定できるバージョン
-void printSMALLFontEX(int fontX, int fontY, char *fontStr, int fontColor) {
+void printSMALLFontEX(int fontX, int fontY, const char *fontStr, int fontColor) {
 	int		i, sx, sy, stringLength, stringChar;
 
 	stringLength = StrLen(fontStr);
@@ -2144,7 +2146,7 @@ void printSMALLFontEX(int fontX, int fontY, char *fontStr, int fontColor) {
 }
 
 // 大きいバージョン（数字のみ）
-void printBIGFont(int fontX, int fontY, char *fontStr, int fontColor) {
+void printBIGFont(int fontX, int fontY, const char *fontStr, int fontColor) {
 	int		i, sx, sy, stringLength, stringChar;
 
 	stringLength = StrLen(fontStr);
@@ -2157,7 +2159,7 @@ void printBIGFont(int fontX, int fontY, char *fontStr, int fontColor) {
 }
 // とっても小さいバージョン　6x7
 // 数字、/ : < > 、アルファベット大文字が使用可能　ただし字詰め無し
-void printTinyFont(int fontX, int fontY, char *fontStr) {
+void printTinyFont(int fontX, int fontY, const char *fontStr) {
 	int		i, sx, sy, stringLength, stringChar;
 
 	stringLength = StrLen(fontStr);

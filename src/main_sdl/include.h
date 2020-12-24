@@ -6,6 +6,10 @@
 #include <SDL/SDL_mixer.h>
 #include <SDL/SDL_endian.h>
 #include <time.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+#include "gamestart.h"
 
 #if		SDL_USE_OPENGL
 #include "SDL_opengl.h"

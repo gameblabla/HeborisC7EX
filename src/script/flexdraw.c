@@ -1,3 +1,5 @@
+#include "gamestart.h"
+
 // •`‰æ”{—¦‚ğ‰Â•Ï‚Å‚«‚é‚æ‚¤‚É‚È‚Á‚½ŠÖ”ŒQB
 // ’Êí‚Ì•`‰æŠÖ”‚Ì“ª‚É Ex ‚ğ‚Â‚¯‚Ü‚·B
 
@@ -7,7 +9,8 @@ void setDrawRate(int size) {
 #ifdef FORCE320
 	zoomRate = 1;
 #else
-	zoomRate = size;
+	//zoomRate = size;
+	zoomRate = 2;
 #endif
 }
 
@@ -15,7 +18,8 @@ int getDrawRate() {
 #ifdef FORCE320
 	return 1;
 #else
-	return zoomRate;
+	// return size;
+	return 2;
 #endif
 }
 

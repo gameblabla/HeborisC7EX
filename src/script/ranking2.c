@@ -1,3 +1,5 @@
+#include "gamestart.h"
+
 //▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽
 //  ランキング関連
 //▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲
@@ -69,8 +71,7 @@ int RankingCheck2(int rmode, int rrots, int rdata, int rtime, int rclear) {
 }
 
 // ランキングに登録
-void RankingRegist2(int rmode, int rrots, int rdata, int rtime, int rclear,
-	int rother, char *rname, int rank, int rac, int rst, int rsk, int rco ,int rre) {
+void RankingRegist2(int rmode, int rrots, int rdata, int rtime, int rclear, int rother, char *rname, int rank, int rac, int rst, int rsk, int rco ,int rre) {
 
 	int i, j, rcolor;
 
@@ -399,7 +400,8 @@ void RankingView2() {//5位まで
 }
 // ランキングを保存
 void RankingSave2() {
-	int i, temp2[3];
+	int i;
+	char temp2[3];
 
 	FillMemory(&saveBuf, 5000 * 4, 0);
 
@@ -412,7 +414,7 @@ void RankingSave2() {
 	// ランキングデータ
 	for(i = 0; i < (5 * 15 * 2); i++) {
 		// 名前
-		StrCpy(&temp2, rkname[i]);
+		StrCpy(temp2, rkname[i]);
 		saveBuf[4 + i] = temp2[0];//1
 
 		// 段位
@@ -441,7 +443,8 @@ void RankingSave2() {
 
 // ランキングを読み込み
 int RankingLoad2() {
-	int i, temp2[3];
+	int i;
+	char temp2[3];
 
 	// ヘッダだけ読み込み
 	FillMemory(&saveBuf, 5000 * 4, 0);
@@ -459,7 +462,7 @@ int RankingLoad2() {
 	for(i = 0; i < (5 * 15 * 2); i++) {
 		// 名前
 		temp2[0] = saveBuf[4 + i];
-		StrCpy(rkname[i], &temp2);
+		StrCpy(rkname[i], temp2);
 
 		// 段位
 		rkdata[i]  = saveBuf[4 + i + (5 * 15 * 2) * 1];
@@ -548,10 +551,16 @@ void RankingAlloc() {
 	int i;
 	if ( !allocked2 )
 	{
-		for(i = 0; i < (5 * 15 * 2 ); i++) rkname[i] = new char[4];
+		for(i = 0; i < (5 * 15 * 2 ); i++) rkname[i] = (str)malloc(4);
 		allocked2 = true;
 	}
 }
+
+void free_rk2name() {
+	int i;
+	for(i = 0; i < (5 * 15 * 2 ); i++) if (rkname[i]) free(rkname[i]);
+}
+
 
 
 void getModeNameEx( int mode, int number ) {

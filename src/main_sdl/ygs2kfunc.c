@@ -4,8 +4,6 @@
 #include "SDL_kanji.h"
 #include "ygs2kfunc.h"
 
-#include <iostream>
-
 #define		SCREEN_BPP			0
 //#define		USE_SOFTSTRETCH		1
 
@@ -97,13 +95,13 @@ static unsigned int		s_uFPSCnting;
 static unsigned int		s_uFPS;
 static unsigned int		s_uNowFPS = 60;
 
-static STextLayer		s_TextLayer[YGS_TEXTLAYER_MAX];
+static struct STextLayer		s_TextLayer[YGS_TEXTLAYER_MAX];
 extern int				screenMode;
 
 static int				s_iNewOffsetX = 0, s_iNewOffsetY = 0;
 static int				s_iOffsetX = 0, s_iOffsetY = 0;
 
-static SScreenInfo	s_ScreenInfo[] =
+static struct SScreenInfo	s_ScreenInfo[] =
 {
 	{ 320, 240,  320,  240, true },		// 0
 	{ 320, 240,  320,  240, false },	// 1
@@ -130,7 +128,7 @@ bool YGS2kInit()
 	/* CONFIG.SAVより設定をロード */
 	if ( LoadConfig() )
 	{
-		readdef::readdef();
+		readdef();
 		LoadConfig();
 	}
 
@@ -140,7 +138,7 @@ bool YGS2kInit()
 	/* 画面モードの変更 */
 	if ( screenMode >= 0 && screenMode <= 12 )
 	{
-		SScreenInfo		*s = &s_ScreenInfo[screenMode];
+		struct SScreenInfo		*s = &s_ScreenInfo[screenMode];
 		winWidth  = s->win_w;
 		winHeight = s->win_h;
 		fullscreen = s->full_screen ? SDL_FULLSCREEN : 0;
@@ -157,9 +155,11 @@ bool YGS2kInit()
 		#ifdef FORCE320
 		winWidth  = 320;
 		winHeight = 240;
+		screenMode = 1;
 		#else
 		winWidth  = 640;
 		winHeight = 480;
+		screenMode = 4;
 		#endif
 		break;
 	}
@@ -230,7 +230,7 @@ bool YGS2kInit()
 	/* テキストレイヤーの初期化 */
 	for ( int i = 0 ; i < YGS_TEXTLAYER_MAX ; i ++ )
 	{
-		memset(&s_TextLayer[i], 0, sizeof(STextLayer));
+		memset(&s_TextLayer[i], 0, sizeof(struct STextLayer));
 		s_TextLayer[i].r = s_TextLayer[i].g = s_TextLayer[i].b = 255;
 		s_TextLayer[i].size = 16;
 	}
@@ -251,6 +251,8 @@ bool YGS2kInit()
 
 void YGS2kExit()
 {
+	extern void free_rkname();
+	extern void free_rk2name();
 	/* テクスチャ領域の解放 */
 	for ( int i = 0 ; i < YGS_TEXTURE_MAX ; i ++ )
 	{
@@ -299,6 +301,8 @@ void YGS2kExit()
 		Mix_FreeMusic(s_pYGSMusic);
 		s_pYGSMusic = NULL;
 	}
+	
+	free_rkname();
 }
 
 bool YGS2kHalt()
@@ -379,8 +383,12 @@ bool YGS2kHalt()
 	return true;
 }
 
-void YGS2kTextOut(int x, int y, char* text, int r, int g, int b, int size)
+void YGS2kTextOut(int x, int y, const char* text, int r, int g, int b, int size)
 {
+	if (!r) r = 255;
+	if (!g) g = 255;
+	if (!b) b = 255;
+	if (!size) size = 12;
 	YGS2kKanjiDraw(x, y, r, g, b, size, text);
 }
 
@@ -411,6 +419,7 @@ int IsPushJoyKey ( int key )
 
 int IsPressJoyKey ( int key )
 {
+	int	key2;
 	if ( s_pJoyPads[s_iActivePad] )
 	{
 		Uint8 hat = SDL_JoystickGetHat(s_pJoyPads[s_iActivePad], 0);
@@ -437,7 +446,7 @@ int IsPressJoyKey ( int key )
 			break;
 
 		default:
-			int		key2 = key - 4;
+			key2 = key - 4;
 			if ( key2 >= 0 && key2 < 16 ) return SDL_JoystickGetButton(s_pJoyPads[s_iActivePad], key2);
 			break;
 		}
@@ -641,7 +650,7 @@ int IsPlayWave( int no )
 	return 0;
 }
 
-void LoadWave( char* filename, int no )
+void LoadWave( const char* filename, int no )
 {
 	int		len = strlen(filename);
 	if ( len < 4 ) { return; }
@@ -680,7 +689,7 @@ void SetLoopModeWave( int no, int mode )
 
 }
 
-void LoadMIDI( char* filename )
+void LoadMIDI( const char* filename )
 {
 	if ( s_pYGSMusic != NULL )
 	{
@@ -691,7 +700,7 @@ void LoadMIDI( char* filename )
 	s_pYGSMusic = Mix_LoadMUS(filename);
 }
 
-void LoadBitmap( char* filename, int plane, int val )
+void LoadBitmap( const char* filename, int plane, int val )
 {
 #if		SDL_USE_OPENGL
 	if ( s_pYGSTexture[plane].active )
@@ -757,7 +766,7 @@ void SetFillColor(int col)
 
 }
 
-void LoadFile( char* filename, void* buf, int size )
+void LoadFile( const char* filename, void* buf, int size )
 {
 	FILE	*file;
 	
@@ -784,7 +793,7 @@ void LoadFile( char* filename, void* buf, int size )
 	}
 }
 
-void SaveFile( char* filename, void* buf, int size )
+void SaveFile( const char* filename, void* buf, int size )
 {
 	FILE	*file;
 	int		i, *buf2;
@@ -851,7 +860,7 @@ void TextHeight ( int layer, int height )
 
 }
 
-void TextOut ( int layer, char* text )
+void TextOut ( int layer, const char* text )
 {
 	strcpy(s_TextLayer[layer].string, text);
 }
@@ -1114,32 +1123,8 @@ int GetRealFPS()
 	return s_uFPS;
 }
 
-void StrCpy(char *dest, char *src)
-{
-	strcpy(dest, src);
-}
 
-void StrCpy(void *dest, char *src)
-{
-	strcpy((char*)dest, src);
-}
-
-void StrCpy(char *dest, void *src)
-{
-	strcpy(dest, (char*)src);
-}
-
-void StrCat(char *str1, char *str2)
-{
-	strcat(str1, str2);
-}
-
-int StrLen(char *stri)
-{
-	return strlen(stri);
-}
-
-void MidStr(char *src, int start, int len, char *dest)
+void MidStr(const char *src, int start, int len, char *dest)
 {
 	int		i;
 	for ( i = 0 ; i < len ; i ++ )
@@ -1149,12 +1134,12 @@ void MidStr(char *src, int start, int len, char *dest)
 	dest[len] = '\0';
 }
 
-void LeftStr(char *src, int len, char *dest)
+void LeftStr(const char *src, int len, char *dest)
 {
 	MidStr(src, 1, len, dest);
 }
 
-char CharAt(char *stri, int pos)
+char CharAt(const char *stri, int pos)
 {
 	return stri[pos];
 }
@@ -1280,7 +1265,7 @@ void YGS2kKanjiDrawSub(int font, int x, int y, int kx, int ky)
 #endif
 }
 
-void YGS2kKanjiDraw(int x, int y, int r, int g, int b, int size, char *str)
+void YGS2kKanjiDraw(int x, int y, int r, int g, int b, int size, const char *stri)
 {
 #if		USE_GL_KANJI
 	int		font = 0;
@@ -1296,7 +1281,7 @@ void YGS2kKanjiDraw(int x, int y, int r, int g, int b, int size, char *str)
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glColor4ub(r, g, b, 255);
-	s_pKanjiFont[font].print(x, y, str);
+	s_pKanjiFont[font].print(x, y, stri);
 	glColor4ub(255, 255, 255, 255);
 #elif	USE_SDLKANJI
 	SDL_Color col;
@@ -1320,10 +1305,10 @@ void YGS2kKanjiDraw(int x, int y, int r, int g, int b, int size, char *str)
 #if		SDL_USE_OPENGL
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glColor4ub(r, g, b, 255);
-		Kanji_PutTextGL(s_pKanjiFont[font], x, y + 2, str, r, g, b, s_fDrawScale);
+		Kanji_PutTextGL(s_pKanjiFont[font], x, y + 2, stri, r, g, b, s_fDrawScale);
 		glColor4ub(255, 255, 255, 255);
 #else
-		Kanji_PutText(s_pKanjiFont[font], x, y, s_pScreenSurface, str, col);
+		Kanji_PutText(s_pKanjiFont[font], x, y, s_pScreenSurface, stri, col);
 #endif
 	}
 #elif	USE_PNGKANJI
@@ -1347,12 +1332,12 @@ void YGS2kKanjiDraw(int x, int y, int r, int g, int b, int size, char *str)
 
 	int		firstbyte = 0;
 	int		xx = 0, yy = 0;
-	int		len = strlen(str);
+	int		len = strlen(stri);
 	int		width = s_iKanjiWidth[font];
 
 	for ( int i = 0 ; i < len ; i ++ )
 	{
-		unsigned char	chr = str[i];
+		unsigned char	chr = stri[i];
 
 		if ( chr == '\n' )
 		{

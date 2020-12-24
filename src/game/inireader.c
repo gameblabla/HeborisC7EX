@@ -108,10 +108,10 @@ static void IniReadProcess(char* buf, int size)
 					{
 						if ( strlen(s_szIniReadName) < INIREAD_READNAME_MAX - 1 )
 						{
-							char	str[2];
-							str[0] = chr;
-							str[1] = '\0';
-							strcat(s_szIniReadName, str);
+							char	stri[2];
+							stri[0] = chr;
+							stri[1] = '\0';
+							strcat(s_szIniReadName, stri);
 						}
 					}
 					else if ( IsEqualChar(chr) )
@@ -153,10 +153,10 @@ static void IniReadProcess(char* buf, int size)
 					{
 						if ( strlen(s_szIniReadValue) < INIREAD_READVALUE_MAX - 1)
 						{
-							char	str[2];
-							str[0] = chr;
-							str[1] = '\0';
-							strcat(s_szIniReadValue, str);
+							char	stri[2];
+							stri[0] = chr;
+							stri[1] = '\0';
+							strcat(s_szIniReadValue, stri);
 						}
 					}
 					else if ( IsSemiColonChar(chr) )
@@ -197,10 +197,10 @@ static void IniReadProcess(char* buf, int size)
 					{
 						if ( strlen(s_szIniReadValue) < INIREAD_READVALUE_MAX - 1)
 						{
-							char	str[2];
-							str[0] = chr;
-							str[1] = '\0';
-							strcat(s_szIniReadValue, str);
+							char	stri[2];
+							stri[0] = chr;
+							stri[1] = '\0';
+							strcat(s_szIniReadValue, stri);
 						}
 					}
 					else
@@ -221,7 +221,7 @@ static void IniReadProcess(char* buf, int size)
 	}
 }
 
-void LoadIniFile(char *filename)
+void LoadIniFile(const char *filename)
 {
 	s_szIniReadName [0] = '\0';
 	s_szIniReadValue[0] = '\0';

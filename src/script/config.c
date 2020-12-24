@@ -1,58 +1,53 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "gamestart.h"
 
-int	screenMode;		// ウィンドウモード	0:全画面 1:ウィンドウ(320x240) 2:ウィンドウ(640x480)
+extern int	screenMode;		// ウィンドウモード	0:全画面 1:ウィンドウ(320x240) 2:ウィンドウ(640x480)
 int colorMode;		// カラーモード		0:16bit (65536色) 1:32bit (1677万色)
-int	systemmem;		// サーフェス格納	0:VRAM(高速) 1:システムメモリ(低速)
-int	nextblock;		// ツモ
-//int	blockkind;		// ブロックグラフィック	0:aa 1:ab 2:ba 3:bb
-int	smooth;			// ブロック落下	0:ノーマル 1:スムーズ
-int	nanameallow;	// 斜め入力		0:無効 1:有効
-int	sonicdrop;		// 上入れ即接地	0:有効 1:無効
-int	fastlrmove;		// 横先行入力	0:有効 1:無効
-int	blockflash;		// ブロック枠	0:点滅 1:点灯 2:無し
-int	background;		// フィールド背景0:スクロール 1:スクロール無し 2:ベタ
+extern int	systemmem;		// サーフェス格納	0:VRAM(高速) 1:システムメモリ(低速)
+extern int	nextblock;		// ツモ
+//extern int	blockkind;		// ブロックグラフィック	0:aa 1:ab 2:ba 3:bb
+extern int	smooth;			// ブロック落下	0:ノーマル 1:スムーズ
+extern int	nanameallow;	// 斜め入力		0:無効 1:有効
+extern int	sonicdrop;		// 上入れ即接地	0:有効 1:無効
+extern int	fastlrmove;		// 横先行入力	0:有効 1:無効
+extern int	blockflash;		// ブロック枠	0:点滅 1:点灯 2:無し
+extern int	background;		// フィールド背景0:スクロール 1:スクロール無し 2:ベタ
 
-int	rots[2];		// 回転規則
-int	lvup[2];		// レベルアップ方式
-int	fontc[12];		// 題字の色	0:白 1:青 2:赤 3:桃 4:緑 5:黄 6:空 7:橙 8:紫 9:藍
-int	digitc[12];		// 数字の色	それぞれ、TGMRule・TiRule・WorldRule・World2Rule・ARSRule・ARS2Rule・World3Rule
-int	giveupKey = 0x10;	// 捨てゲーキー (デフォルトはQ)
-int	ssKey = 0xC7;		// スナップショットキー (デフォルトはHome)
-int pausekey[2] = { 0x3B, 0x3C };	// ポーズキー(デフォルトはF1, F2)		#1.60c7g7
-int dispnextkey[2] = { 0x3D, 0x3E };	// NEXT表示キー(デフォルトはF3, F4) 	#1.60c7g7
-int	dtc;			// tgmlvの表示	0:off  1:on  (lvtype = 1の時は常に表示)
-int	fldtr;			// フィールド背景非表示時のフィールド透過度(0-256)
-int	wavebgm;		// BGMの選択	0:標準midi 1:Wave 2:mp3
+extern int	rots[2];		// 回転規則
+extern int	lvup[2];		// レベルアップ方式
+extern int	fontc[12];		// 題字の色	0:白 1:青 2:赤 3:桃 4:緑 5:黄 6:空 7:橙 8:紫 9:藍
+extern int	digitc[12];		// 数字の色	それぞれ、TGMRule・TiRule・WorldRule・World2Rule・ARSRule・ARS2Rule・World3Rule
+extern int	giveupKey ;	// 捨てゲーキー (デフォルトはQ)
+extern int	ssKey;		// スナップショットキー (デフォルトはHome)
+extern int pausekey[2];	// ポーズキー(デフォルトはF1, F2)		#1.60c7g7
+extern int dispnextkey[2];	// NEXT表示キー(デフォルトはF3, F4) 	#1.60c7g7
+extern int	dtc;			// tgmlvの表示	0:off  1:on  (lvtype = 1の時は常に表示)
+extern int	fldtr;			// フィールド背景非表示時のフィールド透過度(0-256)
+extern int	wavebgm;		// BGMの選択	0:標準midi 1:Wave 2:mp3
 // ver.160c6
-int	dispnext;		// ネクスト表示個数設定
-int	movesound;		// ブロック移動音設定	0:OFF　1:ON
-int	fontsize;		// メイン画面で描画するフォントの大きさ	0:標準　1:小型
-int	maxPlay;		// プレイする最大人数	0:シングル台　1:ツイン台
+extern int	dispnext;		// ネクスト表示個数設定
+extern int	movesound;		// ブロック移動音設定	0:OFF　1:ON
+extern int	fontsize;		// メイン画面で描画するフォントの大きさ	0:標準　1:小型
+extern int	maxPlay;		// プレイする最大人数	0:シングル台　1:ツイン台
 int lastmaxPlay;	// 設定変更前の、プレイする最大人数	0:シングル台　1:ツイン台
 int lasttopframe;
 
-int	breakeffect;	// ラインをそろえたとき、ブロックを弾けさせるか 0:off 1:on
-int	showcombo;		// コンボの表示(SINGLEとかHEBORISとか) 0:off 1:on
+extern int	breakeffect;	// ラインをそろえたとき、ブロックを弾けさせるか 0:off 1:on
+extern int	showcombo;		// コンボの表示(SINGLEとかHEBORISとか) 0:off 1:on
 //int	quickerase;		// ブロックの高速消去 0:ブロックを左から右へ消す 1:同時に消す
 
-int	w_reverse;		// ワールドルールで回転方法を逆転させる 0:off 1:on #1.60c7f8
+extern int	w_reverse;		// ワールドルールで回転方法を逆転させる 0:off 1:on #1.60c7f8
 
-int	downtype;		// 下入れタイプ 0:HEBORIS 1:Ti #1.60c7f9
+extern int	downtype;		// 下入れタイプ 0:HEBORIS 1:Ti #1.60c7f9
 
-int	lvupbonus;		// レベルアップボーナス 0:TI 1:TGM/TAP 2:ajust#1.60c7g3
+extern int	lvupbonus;		// レベルアップボーナス 0:TI 1:TGM/TAP 2:ajust#1.60c7g3
 
-int	keyAssign[10 * 2] =		// キーボード設定 (↑↓←→ABCD)
-{
-31, 45, 44, 46, 48, 49, 57, 50, 0, 0, 		// sxzc bn[space]m
-200, 208, 203, 205, 79, 80, 81, 82, 0, 0	// ↑↓←→ num1num2num3num0
-};
+extern int		keyAssign[10 * 2];
 
-int	joykeyAssign[10 * 2] = {		// ジョイスティックボタン割り当て
-0, 1, 2, 3,   4, 5, 6, 7, -1, -1,		//default={0,1,2,3,10,7,4,8,-1,-1} →pauseとgiveupを追加 1.60c7g7
-0, 1, 2, 3,   4, 5, 6, 7, -1, -1
-};
+extern int	joykeyAssign[10 * 2];		// ジョイスティックボタン割り当て
+	//default={0,1,2,3,10,7,4,8,-1,-1} →pauseとgiveupを追加 1.60c7g7
 
 int	restart;				// 再起動フラグ
 

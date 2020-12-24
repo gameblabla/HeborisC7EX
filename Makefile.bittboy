@@ -1,7 +1,7 @@
-CXX          = /opt/gcw0-toolchain-static/bin/mipsel-linux-g++
+CC          = /opt/bittboy-toolchain-static/bin/arm-linux-gcc
 INCLUDE_PATH := -Isrc/game/ -Isrc/main_sdl -Isrc/
-CXXFLAGS     += -Ofast -mno-abicalls -fdata-sections -ffunction-sections -flto -DLINUX -DHOME_SAVE -DFORCE320
-CXXWARNINGS  := -Wno-c++11-compat-deprecated-writable-strings -Wno-format-extra-args \
+CFLAGS     += -Ofast -mno-abicalls -fdata-sections -ffunction-sections -flto -DLINUX -DHOME_SAVE -DFORCE320
+CWARNINGS  := -Wno-c++11-compat-deprecated-writable-strings -Wno-format-extra-args \
 				-Wno-invalid-source-encoding -Wno-logical-op-parentheses \
 				-Wno-write-strings
 LDLIBS       :=  -lSDL_mixer -lvorbisidec -logg -lmpg123 -lmikmod -lSDL -lasound -lSDL_image -lpng -ljpeg -lz -flto -Wl,--as-needed -Wl,--gc-sections -no-pie -s
@@ -10,8 +10,8 @@ PROGRAM_NAME := heboris
 all: make_directories $(PROGRAM_NAME)
 
 $(PROGRAM_NAME):
-	$(CXX) $(INCLUDE_PATH) $(CXXFLAGS) $(CXXWARNINGS) \
-	src/game/*.cpp src/main_sdl/*.cpp -o $(PROGRAM_NAME) $(LDLIBS)
+	$(CC) $(INCLUDE_PATH) $(CFLAGS) $(CXXWARNINGS) \
+	src/game/*.c src/script/*.c src/main_sdl/*.c $(LDLIBS) -o $(PROGRAM_NAME)
 
 make_directories:
 	@mkdir -p "replay" "config/data"

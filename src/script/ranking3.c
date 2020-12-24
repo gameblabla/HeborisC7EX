@@ -1,3 +1,5 @@
+#include "gamestart.h"
+
 //▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽
 //  ランキング関連
 //▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲
@@ -471,7 +473,8 @@ void RankingView3() {//3位まで
 }
 // ランキングを保存
 void RankingSave3() {
-	int i, temp2[3];
+	int i;
+	char temp2[3];
 
 	FillMemory(&saveBuf, 5000 * 4, 0);
 
@@ -484,7 +487,7 @@ void RankingSave3() {
 	// ランキングデータ
 	for(i = 0; i < ( 6*14*2); i++) {// 6*14*2=6*14*2
 		// 名前
-		StrCpy(&temp2, rkname3[i]);
+		StrCpy(temp2, rkname3[i]);
 		saveBuf[4 + i] = temp2[0];//1
 
 		// 段位
@@ -513,7 +516,8 @@ void RankingSave3() {
 
 // ランキングを読み込み
 int RankingLoad3() {
-	int i, temp2[3];
+	int i;
+	char temp2[3];
 
 	// ヘッダだけ読み込み
 	FillMemory(&saveBuf, 5000 * 4, 0);
@@ -530,7 +534,7 @@ int RankingLoad3() {
 	for(i = 0; i < ( 6*14*2); i++) {
 		// 名前
 		temp2[0] = saveBuf[4 + i];
-		StrCpy(rkname3[i], &temp2);
+		StrCpy(rkname3[i], temp2);
 
 		// 段位
 		rkdata3[i]  = saveBuf[4 + i + ( 6*14*2) * 1];
@@ -567,7 +571,10 @@ void RankingAlloc3() {
 	int i;
 	if ( !allocked3 )
 	{
-		for(i = 0; i < ( 6*14*2 ); i++) rkname3[i] = new char[4];		/* C++ TODO: いいのかな? 解放処理いる? */
+		for(i = 0; i < ( 6*14*2 ); i++)
+		{
+			if (!rkname3[i]) rkname3[i] = (str)malloc(4);		/* C++ TODO: いいのかな? 解放処理いる? */
+		}
 		allocked3 = true;
 	}
 }
@@ -766,4 +773,13 @@ int viewgrade(int player){//masterモードのgrade4の段位を見る
 	if(Isbesttime==0)return 0;
 	tmp = RankingGet3(2,ARSSRSch(rots[player]), 1 );
 	return rkdata3[tmp];
+}
+
+void free_rkname()
+{
+	unsigned int i;
+	for(i = 0; i < ( 6*14*2 ); i++)
+	{
+		if (rkname3[i]) free(rkname3[i]);
+	}	
 }

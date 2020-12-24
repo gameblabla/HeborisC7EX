@@ -1,5 +1,7 @@
-namespace readdef
-{
+#include "gamestart.h"
+
+//namespace readdef
+//{
 	//#include "option.def"
 	#include "keyconf.def"
 
@@ -123,4 +125,4 @@ namespace readdef
 
 		return (0);
 	}
-}
+//}

@@ -1,3 +1,6 @@
+#include "gamestart.h"
+
+
 /* TGM式段位上昇 */
 void GradeUp(int player){
 	if(gameMode[player] >= 4) return;
@@ -12,7 +15,7 @@ void GradeUp(int player){
 
 		// gmflag1成立判定#1.60c7g5
 		if((tc[player] >= 300) && (!gmflag1_e[player])) {
-			if((grade[player] >= 6) && (time[player] <= 255 * 60)){
+			if((grade[player] >= 6) && (time_game[player] <= 255 * 60)){
 					gmflag1[player] = 1;
 					objectCreate2(player, 8, Rand(20) + 180 + 192 * player - 96 * maxPlay, 20 + Rand(10), 0, 0, 0, 0);
 				}
@@ -21,7 +24,7 @@ void GradeUp(int player){
 
 		// gmflag2成立判定#1.60c7g5
 		if((tc[player] >= 500) && (!gmflag2_e[player])) {
-			if((grade[player] >= 9) && (time[player] <= 450 * 60)){
+			if((grade[player] >= 9) && (time_game[player] <= 450 * 60)){
 					gmflag2[player] = 1;
 					objectCreate2(player, 8, Rand(20) + 180 + 192 * player - 96 * maxPlay, 20 + Rand(10), 0, 0, 0, 0);
 				}
@@ -244,13 +247,13 @@ void GradeUp2(int player, int lines){
 				gup_down[player] = 1;
 				gflash[player] = 120;
 				PlaySE(30);//rankup.wav
-				gtime[player] = 0;
+				gtime_game[player] = 0;
 				grade[player]++;
 				gpoint[player] = ((gpoint[player] - 100)/ ((tc[player] / 350) + 1 + (combo2[player] / 2)));//持ち越し
 			}
 					// gmflag1成立判定#C7T5EX
 			if((tc[player] >= 500) && (!gmflag1_e[player])) {
-				if((grade[player] >= 11) && (time[player] <= 300 * 60)){
+				if((grade[player] >= 11) && (time_game[player] <= 300 * 60)){
 					gmflag1[player] = 1;
 					objectCreate2(player, 8, Rand(20) + 180 + 192 * player - 96 * maxPlay, 20 + Rand(10), 0, 0, 0, 0);
 				}
@@ -259,7 +262,7 @@ void GradeUp2(int player, int lines){
 
 			// gmflag2成立判定#C7T5EX
 			if((tc[player] >= 700) && (!gmflag2_e[player])) {
-				if((grade[player] >= 19) && (time[player] <= 390*60)){
+				if((grade[player] >= 19) && (time_game[player] <= 390*60)){
 					gmflag2[player] = 1;
 					objectCreate2(player, 8, Rand(20) + 180 + 192 * player - 96 * maxPlay, 20 + Rand(10), 0, 0, 0, 0);
 				}
@@ -269,7 +272,7 @@ void GradeUp2(int player, int lines){
 			if( (gpoint[player] >= 100) &&(grade2[player] <= 29)) {//MM
 				gup_down[player] = 1;
 
-				gtime[player] = 0;
+				gtime_game[player] = 0;
 				grade2[player]++;
 				gpoint[player] = 0;
 				if((grade2[player]==0)||(grade2[player]==1)||(grade2[player]==2)||(grade2[player]==3)||
@@ -325,7 +328,7 @@ void GradeUp2(int player, int lines){
 
 			// gmflag1成立判定#C7T5EX
 			if((tc[player] >= 500) && (!gmflag1_e[player])) {
-				if((grade2[player] >= 11) && (time[player] <= 300 * 60)){
+				if((grade2[player] >= 11) && (time_game[player] <= 300 * 60)){
 					gmflag1[player] = 1;
 					objectCreate2(player, 8, Rand(20) + 180 + 192 * player - 96 * maxPlay, 20 + Rand(10), 0, 0, 0, 0);
 				}
@@ -334,7 +337,7 @@ void GradeUp2(int player, int lines){
 
 			// gmflag2成立判定#C7T5EX
 			if((tc[player] >= 700) && (!gmflag2_e[player])) {
-				if((grade2[player] >= 19) && (time[player] <= 390*60)){
+				if((grade2[player] >= 19) && (time_game[player] <= 390*60)){
 					gmflag2[player] = 1;
 					objectCreate2(player, 8, Rand(20) + 180 + 192 * player - 96 * maxPlay, 20 + Rand(10), 0, 0, 0, 0);
 				}
@@ -360,7 +363,7 @@ void GradeUp3(int player) {//ブロックを置く度に
 
 		if(repversw < 49) isqcool = (ave_laptime3[player] < border_time48[border_rank[player]]);
 		else if(repversw < 60) isqcool = (ave_laptime3[player] < border_time59[border_rank[player]]);
-		else isqcool = (ave_laptime3[player] < border_time[border_rank[player]]);
+		else isqcool = (ave_laptime3[player] < border_time_game[border_rank[player]]);
 
 		if(isqcool){//
 			gup_down[player] = 1;//coolの文字を出す
@@ -402,7 +405,7 @@ void isregret(int player){	//100超えるごと呼び出し
 	int	border_time2[2],regretgosa[2];
 	regretgosa[player] = tr2[player]/40;
 	if(repversw >= 49){
-	border_time2[player]= border_time[border_rank[player]]+ 6 + regretgosa[player];
+	border_time2[player]= border_time_game[border_rank[player]]+ 6 + regretgosa[player];
 	}else{
 	border_time2[player]= border_time48[border_rank[player]]+ 6 + regretgosa[player];
 	}

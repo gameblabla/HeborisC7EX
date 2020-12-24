@@ -1,13 +1,15 @@
+#include "gamestart.h"
+
 /* TOMOYOモードでの部分的初期化処理 #1.60c7l8 */
 void tomoyoInitial(int player) {
 	int sbak[20];
 
 	// 初期化されては困るものをバックアップにコピー
 	sbak[0]  = stage[player];	// ステージ
-	sbak[1]  = ltime[player];	// リミットタイム
+	sbak[1]  = ltime_game[player];	// リミットタイム
 	sbak[2]  = nextc[player];	// NEXTカウント
 	sbak[3]  = next[player];		// NEXTブロック
-	sbak[4]  = time[player];		// タイム
+	sbak[4]  = time_game[player];		// タイム
 	sbak[5]  = clearnum[player];	// クリアステージ数
 	sbak[6]  = clearp[player];	// クリア率
 	sbak[7]  = replay_save[player];	// 記録可能フラグ
@@ -26,10 +28,10 @@ void tomoyoInitial(int player) {
 
 	// 初期化されては困るものをバックアップから戻す
 	stage[player]       = sbak[0];
-	ltime[player]       = sbak[1];
+	ltime_game[player]       = sbak[1];
 	nextc[player]       = sbak[2];
 	next[player]        = sbak[3];
-	time[player]        = sbak[4];
+	time_game[player]        = sbak[4];
 	clearnum[player]    = sbak[5];
 	clearp[player]      = sbak[6];
 	replay_save[player] = sbak[7];
@@ -110,7 +112,7 @@ void statTomoyoNextStage(int player) {
 		printFont(17 + 24 * player - 12 * maxPlay, 8, "CLEAR", 0);
 		if((stage[player] >= 0) && (stage[player] <= 26)){
 		}
-	} else if(stime[player] == 0) {
+	} else if(stime_game[player] == 0) {
 		printFont(16 + 24 * player - 12 * maxPlay, 8, "TIME OVER", 0);
 		if((stage[player] >= 0) && (stage[player] <= 26)){
 		}
@@ -145,9 +147,9 @@ void statTomoyoNextStage(int player) {
 			printSMALLFont( (15 + 24 * player - 12 * maxPlay)*8 + 8, 13*8, "Time Extend", 3 );
 
 			// リミットタイム増加量を決める
-			if(ctime[player] < 10 * 60) {
+			if(ctime_game[player] < 10 * 60) {
 				ext = 10;
-			}else if(ctime[player] < 20 * 60) {
+			}else if(ctime_game[player] < 20 * 60) {
 				ext = 5;
 			}
 
@@ -160,7 +162,7 @@ void statTomoyoNextStage(int player) {
 		}
 		// CLEAR TIME
 		printSMALLFont( (15 + 24 * player - 12 * maxPlay)*8 + 8, 16*8, "Clear Time", 3 );
-		getTime(ctime[player]);
+		getTime(ctime_game[player]);
 		printSMALLFont( (15 + 24 * player - 12 * maxPlay)*8 + 8, 17*8 + 1, string[0], 0 );
 
 		if(Stage_update) {
@@ -178,9 +180,9 @@ void statTomoyoNextStage(int player) {
 			timeextend_snd_cnt[player]++;
 		}
 
-		ltime_s[player] = ltime[player]+ext_s[player];
+		ltime_s[player] = ltime_game[player]+ext_s[player];
 	}else{
-		ltime_s[player] = ltime[player];
+		ltime_s[player] = ltime_game[player];
 	}
 	if(!fpbas_mode[player]){
 		printSMALLFont( (15 + 24 * player - 12 * maxPlay)*8 + 8, 10*8, "Limit Time", 3 );
@@ -189,7 +191,7 @@ void statTomoyoNextStage(int player) {
 	}
 	if(!hide_tomoyo_totaltime) {
 		printSMALLFont( (15 + 24 * player - 12 * maxPlay)*8 + 8, 19*8, "Total Time", 3);
-		getTime(time[player]);
+		getTime(time_game[player]);
 		printSMALLFont( (15 + 24 * player - 12 * maxPlay)*8 + 8, 20*8 + 1, string[0], 0);
 	}
 
@@ -226,7 +228,7 @@ void statTomoyoNextStage(int player) {
 				laststage[player] = 22;
 			} else if((clearp[player] == 100)&(stage[player]==19)){
 				// 100%の場合はステージ20までのタイムで決める
-				if (time[player] < timelimit_tomoyo) {
+				if (time_game[player] < timelimit_tomoyo) {
 					// 5分以内なら最後まで
 					laststage[player] = 26;
 					//EX7行きが決まれば流れ星
@@ -239,12 +241,12 @@ void statTomoyoNextStage(int player) {
 			}
 		}
 		// リミットタイム増加
-		ltime[player] = ltime[player] + (ext * 60);
+		ltime_game[player] = ltime_game[player] + (ext * 60);
 
 		if(stage[player] >= 100)
 			sc[player] = sc[player] + FP_bonus[player];
 
-		if( stage[player] == 19 ) ltime[player] = ltime[player] + (60 * 60);	// 20面クリアで1分増加 #1.60c7l9
+		if( stage[player] == 19 ) ltime_game[player] = ltime_game[player] + (60 * 60);	// 20面クリアで1分増加 #1.60c7l9
 
 		if( !t_training[player] ) {
 			stage[player]++;	// トレーニングでないなら次のステージへ
@@ -917,11 +919,11 @@ void statTomoyoSelect(int player) {
 		PlayWave(10);
 		stage[player] = start_stage[player];
 		if((start_stage[player] >= 27) && (start_stage[player] <= 44) )
-			ltime[player] = 600 * 60;
+			ltime_game[player] = 600 * 60;
 		else if(start_stage[player] < 100)
-			ltime[player] = 180 * 60;
+			ltime_game[player] = 180 * 60;
 		else
-			ltime[player] = 1080 * 60;
+			ltime_game[player] = 1080 * 60;
 		stage_nextc[player] = start_nextc[player];	// ステージスタート時のNEXTC #1.60c7l9
 
 		bgmlv = setstartBGM(gameMode[player], player);		// BGM設定 #1.60c7o8
@@ -1026,7 +1028,7 @@ void statTomoyoResult(int player) {
 
 	// TIME
 	ExBltRect(3, 120 + 192 * player - 96 * maxPlay, 75, 180, 119, 19, 7);
-	getTime(time[player]);
+	getTime(time_game[player]);
 	printSMALLFont(152 + 192 * player - 96 * maxPlay, 75, string[0], 0);
 
 	// CLEAR #1.60c7m5
@@ -1071,9 +1073,9 @@ void statTomoyoResult(int player) {
 			PlayWave(10);
 
 			if((stage[player] >= 27) && (stage[player] <= 44) )
-				ltime[player] = 600 * 60;
+				ltime_game[player] = 600 * 60;
 			else
-				ltime[player] = 180 * 60;
+				ltime_game[player] = 180 * 60;
 
 			nextc[player] = stage_nextc[player];
 			next[player] = nextb[nextc[player] + player * 1400];
@@ -1307,7 +1309,7 @@ void randPlatinum(int player, int tgtnum){
 				for(j = 0; j < fldsizew[player]; j++) {
 					if((fld[j + i * fldsizew[player] + player * 220] >= 2) && (fld[j + i * fldsizew[player] + player * 220] <= 8)) {
 						empty = 0;
-						if((tgtnum == 99) || (rand(10, player) == 0)) {
+						if((tgtnum == 99) || (rand_game(10, player) == 0)) {
 							fld[j + i * fldsizew[player] + player * 220] = fld[j + i * fldsizew[player] + player * 220] + 9;
 							put_num++;
 							put_flag[i] = 1;

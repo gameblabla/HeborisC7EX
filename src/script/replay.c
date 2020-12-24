@@ -1,3 +1,6 @@
+#include "gamestart.h"
+
+
 //▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽▼▽
 //  キーが押されてたらリプレイを保存する#1.60c7i9
 //▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲
@@ -64,7 +67,7 @@ void saveReplayData(int pl, int number) {
 		saveBuf[i + 5] = temp1;
 	}
 
-	saveBuf[200] = time[pl];
+	saveBuf[200] = time_game[pl];
 	saveBuf[201] = gameMode[pl];
 	saveBuf[202] = sc[pl];
 	saveBuf[203] = lv[pl];
@@ -206,7 +209,7 @@ void saveReplay_VS(int number) {
 		saveBuf[i + 5] = temp1;
 	}
 
-	saveBuf[200] = time[0];
+	saveBuf[200] = time_game[0];
 	saveBuf[201] = gameMode[0];
 	saveBuf[204] = time2[0];	// リプレイ時間　プレイヤー毎
 	saveBuf[205] = time2[1];	//
@@ -751,12 +754,12 @@ int ReplaySelectProc(void) {
 		//next[0] = nextb[nextc[0]];		// #1.60c7
 		if(gameMode[0] == 6){
 			if((start_stage[0] >= 27) && (start_stage[0] <= 44))
-				ltime[0] = 600 * 60;
+				ltime_game[0] = 600 * 60;
 			else if(start_stage[0] >= 100)
-				ltime[0] = 1080 * 60;
+				ltime_game[0] = 1080 * 60;
 		}
 		if((gameMode[0] == 9)&&(std_opt[0] == 1)){
-			ltime[0] = 120 * 60;
+			ltime_game[0] = 120 * 60;
 		}
 		// 段位設定が記録されていないリプレイを
 		// 4設定で再生すると確実にずれるので。
@@ -1266,37 +1269,37 @@ void ReplayDetail(int number) {
 		} else if(gameMode[0] == 8){	// MISSION
 			printFont(1, 15, "FILE NAME.  :", 0);
 			if(mission_file == 0)
-				sprintf(string[0], "BIG ROAD", 0);
+				sprintf(string[0], "BIG ROAD");
 			else if(mission_file == 1)
-				sprintf(string[0], "TRICKY ROAD", 0);
+				sprintf(string[0], "TRICKY ROAD");
 			else if(mission_file == 2)
-				sprintf(string[0], "GRAND ROAD", 0);
+				sprintf(string[0], "GRAND ROAD");
 			else if(mission_file == 3)
-				sprintf(string[0], "STAR ROAD", 0);
+				sprintf(string[0], "STAR ROAD");
 			else if(mission_file == 4)
-				sprintf(string[0], "ANOTHER ROAD", 0);
+				sprintf(string[0], "ANOTHER ROAD");
 			else if(mission_file == 5)
-				sprintf(string[0], "DS ROAD", 0);
+				sprintf(string[0], "DS ROAD");
 			else if(mission_file == 6)
-				sprintf(string[0], "DEVIL ROAD", 0);
+				sprintf(string[0], "DEVIL ROAD");
 			else if(mission_file <= 16)
 				sprintf(string[0], "TRIAL S%d", mission_file - 6);
 			else if(mission_file == 17)
-				sprintf(string[0], "TRIAL HM", 0);
+				sprintf(string[0], "TRIAL HM");
 			else if(mission_file == 18)
-				sprintf(string[0], "TRIAL GOD", 0);
+				sprintf(string[0], "TRIAL GOD");
 			else if(mission_file == 19)
-				sprintf(string[0], "HEBO AMATEUR", 0);
+				sprintf(string[0], "HEBO AMATEUR");
 			else if(mission_file == 20)
-				sprintf(string[0], "HEBO PRO", 0);
+				sprintf(string[0], "HEBO PRO");
 			else if(mission_file == 21)
-				sprintf(string[0], "HEBO BRONZE", 0);
+				sprintf(string[0], "HEBO BRONZE");
 			else if(mission_file == 22)
-				sprintf(string[0], "HEBO SILVER ", 0);
+				sprintf(string[0], "HEBO SILVER ");
 			else if(mission_file == 23)
-				sprintf(string[0], "HEBO GOLD", 0);
+				sprintf(string[0], "HEBO GOLD");
 			else if(mission_file == 24)
-				sprintf(string[0], "HEBO PLATINUM", 0);
+				sprintf(string[0], "HEBO PLATINUM");
 			else
 				sprintf(string[0], "NO.%02d", mission_file);
 			printFont(15, 15, string[0], 0);
