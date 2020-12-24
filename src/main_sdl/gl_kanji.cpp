@@ -15,6 +15,7 @@ class MatrixSaver
 {
 public:
 	MatrixSaver(int matrix_type) {
+		#ifdef SDL_USE_OPENGL
 		glGetFloatv(matrix_type, matrix);
 
 		switch(matrix_type) {
@@ -31,15 +32,18 @@ public:
 			matrix_mode = GL_MODELVIEW;
 			break;
 		}
+		#endif
 	}
 
 	~MatrixSaver() {
+		#ifdef SDL_USE_OPENGL
 		int current_matrix_mode;
 		glGetIntegerv(GL_MATRIX_MODE, &current_matrix_mode);
 
 		glMatrixMode(matrix_mode);
 		glLoadMatrixf(matrix);
 		glMatrixMode(current_matrix_mode);
+		#endif
 	}
 
 private:
@@ -51,6 +55,7 @@ private:
 class ScreenMatrix {
 public:
 	ScreenMatrix() {
+		#ifdef SDL_USE_OPENGL
 		int viewport[4];
 
 		glGetIntegerv(GL_VIEWPORT, viewport);
@@ -62,6 +67,7 @@ public:
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+		#endif
 	}
 
 	float proj_matrix[16];
@@ -113,6 +119,7 @@ void glKanji::init()
 
 void glKanji::print(int x, int y, const char *_str)
 {
+	#ifdef SDL_USE_OPENGL
 	int		lines = 1;
 	if(_str==0 || data.empty()) return;
 
@@ -151,10 +158,12 @@ void glKanji::print(int x, int y, const char *_str)
 			str+=2;
 		}
 	}
+	#endif
 }
 
 bool glKanji::load(const char *filename)
 {
+	#ifdef SDL_USE_OPENGL
 	if(filename==0)
 		return false;
 
@@ -193,6 +202,9 @@ bool glKanji::load(const char *filename)
 
 	max_index = data.size()/char_byte;
 	return true;
+	#else
+	return false;
+	#endif
 }
 
 } // ist

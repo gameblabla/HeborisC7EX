@@ -27,7 +27,7 @@ void staffExecute(int player) {
 //  V‚µ‚¢•¶š—ñ‚ğ‰º‚©‚ç•\¦‚³‚¹‚é
 //£¢£¢£¢£¢£¢£¢£¢£¢£¢£¢£¢£¢£¢£¢£¢£¢£¢£¢£¢£
 void staffRoll(int player) {
-	if( (ending[player] == 2) && (onRecord[player]) && (!pause[player]) ) {
+	if( (ending[player] == 2) && (onRecord[player]) && (!pause_game[player]) ) {
 		if(fastroll[player]){
 			endtime[player]=endtime[player]+2; // Œo‰ßŠÔ+1 #1.60c7o6
 		}else{
@@ -38,7 +38,7 @@ void staffRoll(int player) {
 			endtime[player] = endtime[player] - 1 - (fastroll[player]);
 		}else{
 			// ã‚ÉˆÚ“®
-			if( (endtime[player] % 2 == 0) && (endtime[player] < 3100) && (!pause[player]) ){
+			if( (endtime[player] % 2 == 0) && (endtime[player] < 3100) && (!pause_game[player]) ){
 				staffroll_y_ex[player]++;
 			}
 		}

@@ -428,7 +428,7 @@ void objectNagareboshiC(int no) {
 //objw[no]FREFLECT‚Å’µ‚Ë•Ô‚³‚ê‚½
 void objectItemWarning(int no){
 
-	if((objc[no] == 0) && ((stat[objp[no]] == 5) || (fmirror_cnt[objp[no]] >= 0))){
+	if((objc[no] == 0) && ((stat_game[objp[no]] == 5) || (fmirror_cnt[objp[no]] >= 0))){
 		objc[no] = 1;
 		objy[no] = 1;
 	}

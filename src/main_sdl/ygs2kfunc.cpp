@@ -153,12 +153,6 @@ bool YGS2kInit()
 
 	switch ( screenMode )
 	{
-	case 0:
-	case 1:
-		winWidth  = 320;
-		winHeight = 240;
-		break;
-
 	default:
 		winWidth  = 640;
 		winHeight = 480;
@@ -761,7 +755,14 @@ void SetFillColor(int col)
 void LoadFile( char* filename, void* buf, int size )
 {
 	FILE	*file;
+	
+#ifdef HOME_SAVE
+	char home_path[256];
+	snprintf(home_path, sizeof(home_path), "%s/.heboris/%s", getenv("HOME"), filename);
+	file = fopen(home_path, "rb");
+#else
 	file = fopen(filename, "rb");
+#endif
 	if ( file )
 	{
 		fread(buf, 1, size, file);
@@ -790,7 +791,13 @@ void SaveFile( char* filename, void* buf, int size )
 		buf2[i] = SWAP32(buf2[i]);
 	}
 
+#ifdef HOME_SAVE
+	char home_path[256];
+	snprintf(home_path, sizeof(home_path), "%s/.heboris/%s", getenv("HOME"), filename);
+	file = fopen(home_path, "wb");
+#else
 	file = fopen(filename, "wb");
+#endif
 	if ( file )
 	{
 		fwrite(buf, 1, size, file);

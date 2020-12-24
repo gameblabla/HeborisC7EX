@@ -139,7 +139,7 @@ void cpuMove(int player) {
 	if(cp_rot_c[player] > 0) cp_rot_c[player]--;
 
 	// ˆÚ“®
-	if( (stat[player] == 4) || (stat[player] == 5) ) {
+	if( (stat_game[player] == 4) || (stat_game[player] == 5) ) {
 		if(cp_hold[player]) {
 			// HOLD
 			if(istrance[player]) cp_input[4 + player * 10] = 1;

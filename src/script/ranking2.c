@@ -600,7 +600,7 @@ void viewbesttime(int player){
 
 	color = (count % 4 / 2) * (sp[player] >= 1200) * digitc[rots[player]];
 	/* ベストタイム */
-	if( (gameMode[player] == 7) && ((!maxPlay) || (stat[1 - player] == 0)) ) {
+	if( (gameMode[player] == 7) && ((!maxPlay) || (stat_game[1 - player] == 0)) ) {
 		printFont(26+2*((hnext[player] >= 4) && (!player)) + 7 * player - 12 * maxPlay, 10, "BEST TIME", fontc[rots[player]]);
 
 		tmp = RankingGet2(gameMode[player], anothermode[player], rots[player],player);
@@ -616,7 +616,7 @@ void viewbesttimes(int player){
 	if(Isbesttime==0)return;
 	color = (count % 4 / 2) * (sp[player] >= 1200) * digitc[rots[player]];
 	/* ベストタイム */
-	if( (gameMode[player] == 7) && ((!maxPlay) || (stat[1 - player] == 0)) ) {
+	if( (gameMode[player] == 7) && ((!maxPlay) || (stat_game[1 - player] == 0)) ) {
 			//bestの文字
 			ExBltRect(3, 208+20*((hnext[player] >= 4) && (!player)) + 70 * player - 96 * maxPlay, 78, 251, 91, 21, 7);
 			//timeの文字

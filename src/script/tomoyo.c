@@ -261,11 +261,11 @@ void statTomoyoNextStage(int player) {
 			else if(lv[player] > 0)lv[player]--;
 			sp[player] = lvTabletomoyohebo[lv[player]];
 		}
-		stat[player] = 3;					// Ready
+		stat_game[player] = 3;					// Ready
 		statc[player * 10] = 0;				// ステータスカウンタを0に
 		statc[player * 10 + 1] = 0;			//
 		if((stage[player] >= 100) && (!t_training[player])){
-			stat[player] = 36;				// F-Pointセレクト
+			stat_game[player] = 36;				// F-Pointセレクト
 			statc[player * 10] = 1;
 			statc[player * 10 + 1] = 0;
 			statc[player * 10 + 2] = 0;
@@ -278,7 +278,7 @@ void statTomoyoNextStage(int player) {
 			PlayWave(28);
 			stage[player] = laststage[player];
 			ending[player] = 1;
-			stat[player] = 13;
+			stat_game[player] = 13;
 			if(laststage[player] == 199)
 				sc[player] = sc[player] + 100000;
 			end_f[player] = 1 + (stage[player] >= 26);
@@ -558,7 +558,7 @@ void statTomoyoEditor(int player) {
 
 		// Bボタン
 		if( getPushState(player, 5) ) {
-			stat[player] = statc[player * 10 + 2];	// 戻り先へ
+			stat_game[player] = statc[player * 10 + 2];	// 戻り先へ
 			statc[player * 10] = 0;					// ステータスカウンタを0に
 			statc[player * 10 + 1] = 0;				//
 			statc[player * 10 + 2] = 0;
@@ -901,7 +901,7 @@ void statTomoyoSelect(int player) {
 			fld[i + 220 * player] = 0;
 			fldt[i + 220 * player] = 0;
 		}
-		stat[player] = 2;					// SOLO MODEモードセレクト
+		stat_game[player] = 2;					// SOLO MODEモードセレクト
 		statc[player * 10] = 0;				// ステータスカウンタを0に
 		statc[player * 10 + 1] = 0;			//
 	}
@@ -928,26 +928,26 @@ void statTomoyoSelect(int player) {
 
 		if( statc[player * 10 + 1] == 3 ) {
 			// エディット
-			stat[player] = 18;					// ステージエディタ
+			stat_game[player] = 18;					// ステージエディタ
 			statc[player * 10] = 1;				// ステータスカウンタを0に
 			statc[player * 10 + 1] = 0;			// ステータスカウンタを0に
 			statc[player * 10 + 2] = 19;		// 戻り先設定
 		} else if( statc[player * 10 + 1] == 2 ) {
 			// トレーニングB
 			t_training[player] = 2;				// トレーニングON
-			stat[player] = 1;					// ブロックシャッター
+			stat_game[player] = 1;					// ブロックシャッター
 			statc[player * 10] = 0;				// ステータスカウンタを0に
 			statc[player * 10 + 1] = 3;			// Ready
 		} else if( statc[player * 10 + 1] == 1 ) {
 			// トレーニングA
 			t_training[player] = 1;				// トレーニングON
-			stat[player] = 1;					// ブロックシャッター
+			stat_game[player] = 1;					// ブロックシャッター
 			statc[player * 10] = 0;				// ステータスカウンタを0に
 			statc[player * 10 + 1] = 3;			// Ready
 		} else {
 			// プレイ
 			t_training[player] = 0;				// トレーニングOFF
-			stat[player] = 1;					// ブロックシャッター
+			stat_game[player] = 1;					// ブロックシャッター
 			statc[player * 10] = 0;				// ステータスカウンタを0に
 			statc[player * 10 + 1] = 3;			// Ready
 		}
@@ -972,7 +972,7 @@ void statTomoyoResult(int player) {
 
 	// 音楽を流す
 	// 2人同時で重ならないように修正 #1.60c7m1
-	if( (stat[1 - player] == 0) && (!IsPlayWave(63)) && (wavebgm >= 1) ) PlayWave(63);
+	if( (stat_game[1 - player] == 0) && (!IsPlayWave(63)) && (wavebgm >= 1) ) PlayWave(63);
 
 	// 警告音が鳴っていたら止める
 	StopSE(40);
@@ -1065,7 +1065,7 @@ void statTomoyoResult(int player) {
 
 		if( playback ) {
 			// リプレイ #1.60c7n8
-			stat[player] = 0;	// 参加待ち（タイトルへ）
+			stat_game[player] = 0;	// 参加待ち（タイトルへ）
 		} else if( (!statc[player * 10]) && (statc[player * 10 + 1] < 10 * 60) && (!ending[player]) ) {
 			// YES
 			PlayWave(10);
@@ -1091,12 +1091,12 @@ void statTomoyoResult(int player) {
 			time2[player] = 0;					// TOMOYO用プレイタイムをリセット
 			replay_save[player] = 1;			// リプレイセーブを可能にする
 
-			stat[player] = 1;					// ブロックシャッター
+			stat_game[player] = 1;					// ブロックシャッター
 			statc[player * 10] = 0;				// ステータスカウンタを0に
 			statc[player * 10 + 1] = 3;			// Ready
 		} else {
 			// NO
-			stat[player] = 11;				// ネームエントリ表示 #1.60c7p1
+			stat_game[player] = 11;				// ネームエントリ表示 #1.60c7p1
 			statc[player * 10] = 0;			// ステータスカウンタを0に
 			statc[player * 10 + 1] = 0;
 			statc[player * 10 + 2] = 0;
@@ -1244,7 +1244,7 @@ void statTomoyoSelect_FP(int player) {
 			stage[player] = start_stage[player];
 			bgmlv = setstartBGM(gameMode[player], player);	//BGMセット
 			if(repversw >= 47) FP_bonus[player] = 1000 * (((stage[player]-100) / 4) + 1);
-			stat[player] = 1;					// ブロックシャッター
+			stat_game[player] = 1;					// ブロックシャッター
 			statc[player * 10] = 0;				// ステータスカウンタを0に
 			statc[player * 10 + 1] = 3;			// Ready
 			statc[player * 10 + 2] = 0;
@@ -1262,7 +1262,7 @@ void statTomoyoSelect_FP(int player) {
 				changeBGM(0);
 			}
 			if(repversw >= 47) FP_bonus[player] = 1000 * (((stage[player]-100) / 4) + 1);
-			stat[player] = 3;					// Ready
+			stat_game[player] = 3;					// Ready
 			statc[player * 10] = 0;				// ステータスカウンタを0に
 			statc[player * 10 + 1] = 0;			//
 			statc[player * 10 + 2] = 0;
@@ -1275,7 +1275,7 @@ void statTomoyoSelect_FP(int player) {
 		randommode[player] = 1;
 		versusInit(player);				// NEXTを生成し直す
 		randommode[player] = 0;
-		stat[player] = 1;				// ブロックシャッター実行
+		stat_game[player] = 1;				// ブロックシャッター実行
 		statc[player * 10] = 0;			// ステータスカウンタを0に
 		statc[player * 10 + 1] = 2;		// シャッター後はステータスNo.2
 		relaymode[player] = 0;

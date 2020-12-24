@@ -1,10 +1,10 @@
 #ifndef		__INCLUDE_H__
 #define		__INCLUDE_H__
 
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_mixer.h"
-#include "SDL_endian.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_mixer.h>
+#include <SDL/SDL_endian.h>
 #include <time.h>
 
 #if		SDL_USE_OPENGL
