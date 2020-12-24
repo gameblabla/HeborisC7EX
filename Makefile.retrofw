@@ -1,6 +1,6 @@
 CXX          = /opt/rs97-toolchain/bin/mipsel-linux-g++
 INCLUDE_PATH := -Isrc/game/ -Isrc/main_sdl -Isrc/
-CXXFLAGS     += -Ofast -mno-abicalls -fdata-sections -ffunction-sections -mframe-header-opt -mno-fp-exceptions -mno-check-zero-division -fsingle-precision-constant -fno-common -march=mips32 -mtune=mips32 -flto -DLINUX -DHOME_SAVE
+CXXFLAGS     += -Ofast -mno-abicalls -fdata-sections -ffunction-sections -mframe-header-opt -mno-fp-exceptions -mno-check-zero-division -fsingle-precision-constant -fno-common -march=mips32 -mtune=mips32 -flto -DLINUX -DHOME_SAVE -DFORCE320
 CXXWARNINGS  := -Wno-c++11-compat-deprecated-writable-strings -Wno-format-extra-args \
 				-Wno-invalid-source-encoding -Wno-logical-op-parentheses \
 				-Wno-write-strings

@@ -39,7 +39,11 @@ namespace readdef
 	int rots[2] = {2, 1};
 	int lvup[2] = {1, 1};
 
+	#ifdef FORCE320
+	int		screenMode = 1; // default is 1 - but need to fix error in LITE mode screens
+	#else
 	int		screenMode = 4; // default is 1 - but need to fix error in LITE mode screens
+	#endif
 	int		systemmem =0;
 	int		nextblock =8;
 	int		smooth =0;

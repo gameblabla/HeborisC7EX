@@ -1729,11 +1729,11 @@ void lastProc(void) {
 			} else {
 				// ポーズ
 				pause_game[0] = 1;
-
-				if(gameMode[0] == 0)
+				/* Causes issues */
+				/*if(gameMode[0] == 0)
 					PauseWave(57);
 				else
-					PauseWave(56);
+					PauseWave(56);*/
 			}
 
 			if(gameMode[0] == 4)
@@ -15197,7 +15197,7 @@ void initialize(void) {
 // players : プレイする人数(maxPlayの代わり)
 void LoadGraphics(char *nameStr, int p1, int p2) {
 	if ( getDrawRate() == 1 )
-		sprintf(string[0], "res/graphics/lowDetail%s", nameStr);
+		sprintf(string[0], "res/graphics/lowDetail/%s", nameStr);
 	else
 		sprintf(string[0], "res/graphics/highDetail/%s", nameStr);
 

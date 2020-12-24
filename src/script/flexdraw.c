@@ -4,11 +4,19 @@
 int zoomRate = 1;			/* •`‰æ”{—¦ */
 
 void setDrawRate(int size) {
+#ifdef FORCE320
+	zoomRate = 1;
+#else
 	zoomRate = size;
+#endif
 }
 
 int getDrawRate() {
+#ifdef FORCE320
+	return 1;
+#else
 	return zoomRate;
+#endif
 }
 
 void ExBlt(int pno, int dx, int dy)

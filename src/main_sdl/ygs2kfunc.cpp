@@ -7,10 +7,10 @@
 #include <iostream>
 
 #define		SCREEN_BPP			0
-#define		USE_SOFTSTRETCH		1
+//#define		USE_SOFTSTRETCH		1
 
 #define		USE_GL_KANJI		(0 && SDL_USE_OPENGL)
-#define		USE_SDLKANJI		1
+//#define		USE_SDLKANJI		1
 #define		USE_PNGKANJI		0
 #define		YGS_KANJIFONT_MAX	6
 
@@ -153,9 +153,14 @@ bool YGS2kInit()
 
 	switch ( screenMode )
 	{
-	default:
+		default:
+		#ifdef FORCE320
+		winWidth  = 320;
+		winHeight = 240;
+		#else
 		winWidth  = 640;
 		winHeight = 480;
+		#endif
 		break;
 	}
 
@@ -1025,7 +1030,7 @@ void BlendBltRectR(int pno, int dx, int dy, int sx, int sy, int hx, int hy, int 
 #else
 	if ( s_pYGSTexture[pno] == NULL ) return;
 
-#if		1 // !USE_SOFTSTRETCH
+#if	!USE_SOFTSTRETCH
 	// Šg‘å‚µ‚È‚¢‚Å“K“–‚ÉŒë–‚‰»‚·•`‰æ
 	SDL_Rect	src;
 	SDL_Rect	dst;
