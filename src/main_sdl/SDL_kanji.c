@@ -407,6 +407,8 @@ int Kanji_PutTextGL(Kanji_Font* font, int dx, int dy, const char* txt, int r, in
 	int minx, miny, maxx, maxy;
 	int nowKanji = 0;
 	const unsigned char* text = (const unsigned char*)txt;
+	
+	if (!rate) rate = 1.0f;
 
 	if ( rate == 1.0f )
 	{

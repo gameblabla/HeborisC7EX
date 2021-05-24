@@ -78,7 +78,7 @@ static int power_of_two(int input)
 	}
 }
 
-GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GL_Texture *ptexture)
+GLuint SDL_GL_LoadTexture(SDL_Surface *surface, struct GL_Texture *ptexture)
 {
 	GLuint texture;
 	int w, h;
@@ -164,7 +164,7 @@ GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GL_Texture *ptexture)
 		return texture;
 }
 
-void SDL_GL_FreeTexture(GL_Texture *ptexture)
+void SDL_GL_FreeTexture(struct GL_Texture *ptexture)
 {
 	if ( !ptexture->active ) { return; }
 
@@ -172,7 +172,7 @@ void SDL_GL_FreeTexture(GL_Texture *ptexture)
 	memset(ptexture, 0, sizeof(*ptexture));
 }
 
-void SDL_GL_PutTexture(GL_Texture *ptexture, int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh)
+void SDL_GL_PutTexture(struct GL_Texture *ptexture, int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh)
 {
 	if ( !ptexture->active ) { return; }
 

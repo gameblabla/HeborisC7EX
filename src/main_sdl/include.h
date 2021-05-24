@@ -12,7 +12,7 @@
 #include "gamestart.h"
 
 #if		SDL_USE_OPENGL
-#include "SDL_opengl.h"
+#include <SDL/SDL_opengl.h>
 #include "opengl_utils.h"
 #endif
 

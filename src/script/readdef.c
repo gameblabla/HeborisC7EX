@@ -16,7 +16,11 @@
 	int	dispnext = 3;			//ネクストブロック表示数の選択（０～３）
 	int	movesound = 1;			//ブロック移動音の選択	0:OFF 1:ON
 	/* 1 : MIDI, 2 : WAV, 3 : OGG, 4 : MP3*/
+	#ifdef OGG_MUSIC
+	int	wavebgm = 3;			//BGMの選択
+	#else
 	int	wavebgm = 4;			//BGMの選択
+	#endif
 	int	maxPlay = 0;			//プレイヤー人数の選択	0:シングル 1:デュアル
 
 	int	breakeffect = 1;	//ラインをそろえたとき、ブロックを弾けさせるか 0:off 1:on

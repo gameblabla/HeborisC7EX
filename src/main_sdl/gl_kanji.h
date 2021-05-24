@@ -1,7 +1,7 @@
 #ifndef GL_KANJI_INCLUDE
 #define GL_KANJI_INCLUDE
 
-#if		SDL_USE_OPENGL
+#if	SDL_USE_OPENGL  && defined(KANJIGL)
 namespace ist {
 
 class glKanji

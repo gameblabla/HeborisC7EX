@@ -2,7 +2,7 @@
 #	include <windows.h>
 #endif
 
-#ifdef SDL_USE_OPENGL
+#if	SDL_USE_OPENGL && defined(KANJIGL)
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
@@ -12,7 +12,7 @@
 #include "gl_kanji.h"
 
 
-#ifdef SDL_USE_OPENGL
+#if	SDL_USE_OPENGL && defined(KANJIGL)
 class MatrixSaver
 {
 public:
@@ -53,10 +53,10 @@ private:
 };
 #endif
 
-#ifdef SDL_USE_OPENGL
-class ScreenMatrix {
-public:
-	ScreenMatrix() {
+#if	SDL_USE_OPENGL && defined(KANJIGL)
+//class ScreenMatrix {
+//public:
+	void ScreenMatrix() {
 		int viewport[4];
 
 		glGetIntegerv(GL_VIEWPORT, viewport);
@@ -71,7 +71,7 @@ public:
 	}
 
 	float proj_matrix[16];
-};
+//};
 #endif
 
 static void sjis2jis(unsigned char c1, unsigned char c2)
@@ -94,30 +94,18 @@ static void euc2jis(unsigned char c1, unsigned char c2)
 }
 
 
-#ifdef SDL_USE_OPENGL
-namespace ist {
+#if	SDL_USE_OPENGL && defined(KANJIGL)
+//namespace ist {
 
-glKanji::glKanji(int _code)
-	: code(_code)
-{
-	init();
-}
 
-glKanji::glKanji(const char *filename, int _code)
-	: code(_code)
-{
-	init();
-	load(filename);
-}
-
-void glKanji::init()
+void glKanji_init()
 {
 	font_size = 0;
 	char_byte = 0;
 	max_index = 0;
 }
 
-void glKanji::print(int x, int y, const char *_str)
+void glKanji_print(int x, int y, const char *_str)
 {
 	#ifdef SDL_USE_OPENGL
 	int		lines = 1;
@@ -127,7 +115,7 @@ void glKanji::print(int x, int y, const char *_str)
 
 	MatrixSaver mmsaver(GL_MODELVIEW_MATRIX);	// 変換行列を退避
 	MatrixSaver pmsaver(GL_PROJECTION_MATRIX);
-	ScreenMatrix smatrix;		// 座標系をスクリーンにあわせる
+	//ScreenMatrix smatrix;		// 座標系をスクリーンにあわせる
 
 	glRasterPos2i(x, y+font_size);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -161,7 +149,7 @@ void glKanji::print(int x, int y, const char *_str)
 	#endif
 }
 
-bool glKanji::load(const char *filename)
+bool glKanji_load(const char *filename)
 {
 	#ifdef SDL_USE_OPENGL
 	if(filename==0)
@@ -207,5 +195,5 @@ bool glKanji::load(const char *filename)
 	#endif
 }
 
-} // ist
+//} // ist
 #endif

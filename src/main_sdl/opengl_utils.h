@@ -12,6 +12,7 @@
 
 #if		SDL_USE_OPENGL
 #include <SDL/SDL_opengl.h>
+#include <GL/gl.h>
 struct GL_Texture
 {
 	bool	active;
@@ -25,9 +26,9 @@ struct GL_Texture
 
 void SDL_GL_Enter2DMode();
 void SDL_GL_Leave2DMode();
-GLuint SDL_GL_LoadTexture(SDL_Surface *surface, GL_Texture *ptexture);
-void SDL_GL_FreeTexture(GL_Texture *ptexture);
-void SDL_GL_PutTexture(GL_Texture *ptexture, int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh);
+GLuint SDL_GL_LoadTexture(SDL_Surface *surface, struct GL_Texture *ptexture);
+void SDL_GL_FreeTexture(struct GL_Texture *ptexture);
+void SDL_GL_PutTexture(struct GL_Texture *ptexture, int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh);
 void SDL_GL_SetDrawRate(float rate);
 
 #endif

@@ -37,8 +37,8 @@ SDL_Surface* Kanji_CreateSurfaceTate(Kanji_Font* font, const char* text,
 int Kanji_PutTextTate(Kanji_Font* font, int dx, int dy,
 				      SDL_Surface* dst, const char* text, SDL_Color fg);
 
-#if		SDL_USE_OPENGL
-int Kanji_PutTextGL(Kanji_Font* font, int dx, int dy, const char* txt, int r, int g, int b, float rate = 1.0f);
+#if	SDL_USE_OPENGL && defined(KANJIGL)
+int Kanji_PutTextGL(Kanji_Font* font, int dx, int dy, const char* txt, int r, int g, int b, float rate);
 #endif
 
 void Kanji_CloseFont(Kanji_Font* font);

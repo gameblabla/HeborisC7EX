@@ -7,9 +7,9 @@
 #define		SCREEN_BPP			0
 //#define		USE_SOFTSTRETCH		1
 
-#define		USE_GL_KANJI		(0 && SDL_USE_OPENGL)
+//#define		USE_GL_KANJI		(0 && SDL_USE_OPENGL)
 //#define		USE_SDLKANJI		1
-#define		USE_PNGKANJI		0
+#define		USE_PNGKANJI		1
 #define		YGS_KANJIFONT_MAX	6
 
 #define		YGS_TEXTURE_MAX		100
@@ -54,6 +54,9 @@ enum
 };
 
 static SDL_Surface		*s_pScreenSurface = NULL;
+#ifdef DOWNSCALE
+static SDL_Surface		*rl_video = NULL;
+#endif
 
 #if		SDL_USE_OPENGL
 static GL_Texture		s_pYGSTexture[YGS_TEXTURE_MAX];
@@ -177,7 +180,12 @@ bool YGS2kInit()
 #if		SDL_USE_OPENGL
 	s_pScreenSurface = SDL_SetVideoMode(winWidth, winHeight, SCREEN_BPP, SDL_OPENGL | fullscreen);
 #else
+	#ifdef DOWNSCALE
+	rl_video = SDL_SetVideoMode(240, 240, 16, SDL_SWSURFACE);
+	s_pScreenSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, winWidth, winHeight, 16, 0,0,0,0);
+	#else
 	s_pScreenSurface = SDL_SetVideoMode(winWidth, winHeight, SCREEN_BPP, SDL_SWSURFACE | fullscreen);
+	#endif
 #endif
 
 	/* マウスカーソルを消す場合は */
@@ -328,7 +336,12 @@ bool YGS2kHalt()
 	SDL_Rect	dest;
 
 	/* バックサーフェスをフロントに転送 */
+	#ifdef DOWNSCALE
+	SDL_SoftStretch(s_pScreenSurface, NULL, rl_video, NULL);
+	SDL_Flip( rl_video );
+	#else
 	SDL_Flip( s_pScreenSurface );
+	#endif
 
 	/* 画面塗りつぶし */
 	dest.x = 0;

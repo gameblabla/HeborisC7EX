@@ -1,0 +1,30 @@
+PRGNAME     = heboris.elf
+CC			= /opt/funkey-toolchain/bin/arm-linux-gcc
+
+SRCDIR		= ./src/game/ ./src/main_sdl ./src/ ./src/script
+VPATH		= $(SRCDIR)
+SRC_C		= $(foreach dir, $(SRCDIR), $(wildcard $(dir)/*.c))
+OBJ_C		= $(notdir $(patsubst %.c, %.o, $(SRC_C)))
+OBJS		= $(OBJ_C)
+
+CFLAGS		= -Ofast -fdata-sections -ffunction-sections -flto
+CFLAGS		+= -DLINUX -DHOME_SAVE -DDOWNSCALE -DFORCE320
+CFLAGS		+= -Isrc/game/ -Isrc/main_sdl -Isrc/ -Isrc/script
+
+ifeq ($(PROFILE), YES)
+CFLAGS 		+= -fprofile-generate=./
+else ifeq ($(PROFILE), APPLY)
+CFLAGS		+= -fprofile-use -fbranch-probabilities
+endif
+
+LDFLAGS     = -nodefaultlibs -lc -lgcc -lSDL_mixer -lmikmod -logg -lvorbisidec -lSDL -lasound -lSDL_image -lpng -ljpeg -lz -flto -Wl,--as-needed -Wl,--gc-sections -no-pie -s
+
+# Rules to make executable
+$(PRGNAME): $(OBJS)  
+	$(CC) $(CFLAGS) -o $(PRGNAME) $^ $(LDFLAGS)
+
+$(OBJ_C) : %.o : %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+clean:
+	rm -f $(PRGNAME) *.o
